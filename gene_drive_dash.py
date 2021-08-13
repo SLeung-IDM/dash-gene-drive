@@ -52,6 +52,8 @@ sv6_vals = [6, 12]
 partition_vars = [sv6_str, sv2_str, sv3_str]
 partition_vars_vals = [sv6_vals, sv2_vals, sv3_vals]
 
+partition_vars = []
+
 file_suffix_ls = []
 
 for partition_vars_val0 in partition_vars_vals[0]:
@@ -112,7 +114,7 @@ app.layout = html.Div([
             id='rc-slider',
             min=dfe['rc'].min(),
             max=dfe['rc'].max(),
-            value=dfe['rc'].min(),
+            value=sv1_def,
             marks={str(rc): str(rc) for rc in dfe['rc'].unique()},
             step=None)
     ], style={'width': '49%', 'padding': '0px 20px 20px 20px'}),
@@ -122,13 +124,15 @@ app.layout = html.Div([
             id='d-slider',
             min=dfe['d'].min(),
             max=dfe['d'].max(),
-            value=dfe['d'].min(),
+            value=sv2_def,
             marks={str(d): str(d) for d in dfe['d'].unique()},
             step=None
         )
     ], style={'width': '49%', 'padding': '0px 20px 20px 20px'}),
 
-    dcc.Graph(id='elim-prob-matrix')
+    html.Div([
+        dcc.Graph(id='elim-prob-matrix')
+    ], style={'width': '49%', 'padding': '0px 20px 20px 20px'})
 ])
 
 
