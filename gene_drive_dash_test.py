@@ -23,27 +23,17 @@ if distrib_itns == True:
     itn_distrib_days = [180, 3 * 365 + 180, 6 * 365 + 180]
 
 # Write out sweep variable names and values
-sv1_str = 'rc'
-sv2_str = 'd'
-sv3_str = 'rr0'
-sv4_str = 'sne'
-sv5_str = 'release_day'
-sv6_str = 'num_nodes'
-sv1_def = 1
-sv2_def = 1
-sv3_def = 0
-sv4_def = 0
-sv5_def = 180
-sv6_def = 6
-sv1_vals = [1, 0.9, 0.8, 0.7, 0.6, 0.5]
-sv2_vals = [1, 0.95, 0.9]
-sv3_vals = [0, 0.1, 0.2]
-sv4_vals = [0, 0.05, 0.1, 0.15, 0.2]
-sv5_vals = [180, 240, 300, 360, 420, 480, 545]
-sv6_vals = [6, 12]
+allvardefs = {'rc': 1, 'd': 1, 'rr0': 0,
+              'sne': 0, 'release_day': 180, 'num_nodes': 6}
+allvarvals = {'rc': [1, 0.9, 0.8, 0.7, 0.6, 0.5],
+              'd': [1, 0.95, 0.9],
+              'rr0': [0, 0.1, 0.2],
+              'sne': [0, 0.05, 0.1, 0.15, 0.2],
+              'release_day': [180, 240, 300, 360, 420, 480, 545],
+              'num_nodes': [6, 12]}
 
-partition_vars = [sv6_str, sv2_str, sv3_str]
-partition_vars_vals = [sv6_vals, sv2_vals, sv3_vals]
+partition_vars = ['num_nodes', 'd', 'rr0']
+partition_vars_vals = [allvarvals['num_nodes'], allvarvals['d'], allvarvals['rr0']]
 
 file_suffix_ls = []
 
@@ -65,7 +55,7 @@ for file_suffix in file_suffix_ls:
     filee = os.path.join(data_dir, wi_name + '_inset_data_elim_day_'
                          + str(elim_day) + '_indiv_sims_' + file_suffix + '.csv')
     # fileed = os.path.join(data_dir, wi_name + '_inset_data_elim_day_number_indiv_sims_' + file_suffix + '.csv')
-     #dfi = dfi.append(pd.read_csv(filei))
+    # dfi = dfi.append(pd.read_csv(filei))
     # dfa = dfa.append(pd.read_csv(filea))
     dfe = dfe.append(pd.read_csv(filee))
     # dfed = dfed.append(pd.read_csv(fileed))
@@ -83,7 +73,79 @@ if 'Unnamed: 0' in dfe.columns:
 dfe.rename(columns={'Time': 'time'}, inplace=True)
 # dfed.rename(columns={'Time': 'time'}, inplace=True)
 
+## - TEST 2
+# https://plotly.com/python/subplots/
+
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
+
+dfesm = dfe.drop(columns=['Daily_EIR_elim', 'New_Clinical_Cases_elim', 'Run_Number'])
+
+
+def df_to_plotly(df):
+    return {'z': df.values.tolist(),
+            'x': df.columns.tolist(),
+            'y': df.index.tolist()}
+
+
+mat_xvar = 'rc'
+mat_yvar = 'd'
+ov_xvar = 'rr0'
+ov_yvar = 'sne'
+ov_xvar_vals = [0, 0.1, 0.2]  # subset or all vals
+ov_yvar_vals = [0, 0.05, 0.1, 0.15]  # subset or all vals
+
+subplot_titles = []
+isp = 0
+for ov_yvar_val in ov_yvar_vals:
+    for ov_xvar_val in ov_xvar_vals:
+        subplot_titles.append(ov_xvar + '=' + str(ov_xvar_val) + ', ' + ov_yvar + '=' + str(ov_yvar_val))
+
 ##
+fig = make_subplots(
+    rows=len(ov_yvar_vals), cols=len(ov_xvar_vals),
+    subplot_titles=subplot_titles
+)
+
+for irow, ov_yvar_val in enumerate(ov_yvar_vals):
+    for icol, ov_xvar_val in enumerate(ov_xvar_vals):
+        allvardefsnow = {k: v for k, v in allvardefs.items() if k not in [mat_xvar, mat_yvar, ov_xvar, ov_yvar]}
+
+        dfenow = dfesm
+        for k, v in allvardefsnow.items():
+            dfenow = dfenow[dfenow[k] == v]
+            dfenow.drop(columns=[k], inplace=True)
+        dfenow = dfenow[dfenow[ov_xvar] == ov_xvar_val]
+        dfenow = dfenow[dfenow[ov_yvar] == ov_yvar_val]
+        dfenow.drop(columns=[ov_xvar, ov_yvar], inplace=True)
+
+        dfenownow = (dfenow.groupby([mat_xvar, mat_yvar])['True_Prevalence_elim'].sum() / num_seeds).reset_index()
+        matnow = dfenownow.pivot_table(index=[mat_yvar], columns=[mat_xvar], values='True_Prevalence_elim')
+
+        fig.add_trace(go.Heatmap(df_to_plotly(matnow),
+                                 #x=[str(lab) for lab in allvarvals[mat_xvar]],
+                                 #y=[str(lab) for lab in allvarvals[mat_yvar]],
+                                 #labels=dict(x=mat_xvar, y=mat_yvar, color="Elim frac"),
+                                 colorscale='viridis',
+                                 coloraxis='coloraxis'),
+                      row=irow + 1, col=icol + 1)
+
+
+        # fig.add_trace(px.imshow(matnow,
+        #                         labels=dict(x=mat_xvar, y=mat_yvar, color="Elim frac"),
+        #                         x=[str(lab) for lab in allvarvals[mat_xvar]],
+        #                         y=[str(lab) for lab in allvarvals[mat_yvar]]),
+        #               row=irow+1, col=icol+1)
+
+fig.update_layout(coloraxis={'colorscale': 'viridis'})
+# fig.update_layout(height=500, width=700,
+#                   title_text="Multiple Subplots with Titles")
+
+fig.show()
+
+## - TEST 1
+
+"""
 xvar = 'rr0'
 yvar = 'sne'
 selected_rc = 1
@@ -114,3 +176,4 @@ fig.update_layout(xaxis=dict(scaleanchor='y', constrain='domain'),
                   height=int(width * l_0 / l_1)
                  )
 fig.show()
+"""
