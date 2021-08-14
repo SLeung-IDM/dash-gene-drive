@@ -22,7 +22,7 @@ distrib_itns = True
 if distrib_itns == True:
     itn_distrib_days = [180, 3 * 365 + 180, 6 * 365 + 180]
 
-# Write out sweep variable names and values
+# - Write out sweep variable names and values
 allvardefs = {'rc': 1, 'd': 1, 'rr0': 0,
               'sne': 0, 'release_day': 180, 'num_nodes': 6}
 allvarvals = {'rc': [1, 0.9, 0.8, 0.7, 0.6, 0.5],
@@ -60,7 +60,7 @@ for file_suffix in file_suffix_ls:
     dfe = dfe.append(pd.read_csv(filee))
     # dfed = dfed.append(pd.read_csv(fileed))
 
-# Clean up data
+# - Clean up data
 # if 'Unnamed: 0' in dfi.columns:
 #     dfi = dfi.drop('Unnamed: 0', axis=1)
 # if 'Unnamed: 0' in dfa.columns:
@@ -73,13 +73,93 @@ if 'Unnamed: 0' in dfe.columns:
 dfe.rename(columns={'Time': 'time'}, inplace=True)
 # dfed.rename(columns={'Time': 'time'}, inplace=True)
 
+# - Further clean up data
+dfesm = dfe.drop(columns=['Daily_EIR_elim', 'New_Clinical_Cases_elim', 'Run_Number'])
+
+## - TEST 3
+from plotly.subplots import make_subplots
+import plotly.figure_factory as ff
+
+mat_xvar = 'rc'
+mat_yvar = 'd'
+ov_xvar = 'rr0'
+ov_yvar = 'sne'
+ov_xvar_vals = [0, 0.1, 0.2]  # subset or all vals
+ov_yvar_vals = [0, 0.05, 0.1, 0.15]  # subset or all vals
+
+iaxis = 1
+subplots = []
+subplot_titles = []
+for ov_yvar_val in ov_yvar_vals:
+    for ov_xvar_val in ov_xvar_vals:
+        subplot_titles.append(ov_xvar + '=' + str(ov_xvar_val) + ', ' + ov_yvar + '=' + str(ov_yvar_val))
+
+        allvardefsnow = {k: v for k, v in allvardefs.items() if k not in [mat_xvar, mat_yvar, ov_xvar, ov_yvar]}
+        dfenow = dfesm
+        for k, v in allvardefsnow.items():
+            dfenow = dfenow[dfenow[k] == v]
+            dfenow.drop(columns=[k], inplace=True)
+        dfenow = dfenow[dfenow[ov_xvar] == ov_xvar_val]
+        dfenow = dfenow[dfenow[ov_yvar] == ov_yvar_val]
+        dfenow.drop(columns=[ov_xvar, ov_yvar], inplace=True)
+        dfenownow = (dfenow.groupby([mat_xvar, mat_yvar])['True_Prevalence_elim'].sum() / num_seeds).reset_index()
+        matnow = dfenownow.pivot_table(index=[mat_yvar], columns=[mat_xvar], values='True_Prevalence_elim')
+
+        subplots.append(ff.create_annotated_heatmap(
+            z=matnow.values,
+            x=matnow.columns.tolist(),
+            y=matnow.index.tolist(),
+            #x=[str(lab) for lab in allvarvals[mat_xvar]],
+            #y=[str(lab) for lab in allvarvals[mat_yvar]],
+            coloraxis='coloraxis',
+            hovertemplate=mat_xvar + ': %{x}<br>' + mat_yvar + ': %{y}<br>Elim prob: %{z}<extra></extra>')
+        )
+
+        for annot in subplots[-1]['layout']['annotations']:
+            annot['xref'] = 'x' + str(iaxis)
+            annot['yref'] = 'y' + str(iaxis)
+        iaxis = iaxis + 1
+
+fig = make_subplots(
+    rows=len(ov_yvar_vals), cols=len(ov_xvar_vals),
+    subplot_titles=subplot_titles,
+    horizontal_spacing=0.075,
+    vertical_spacing=0.075
+)
+
+isp = 0
+for irow, ov_yvar_val in enumerate(ov_yvar_vals):
+    for icol, ov_xvar_val in enumerate(ov_xvar_vals):
+        fig.add_trace(subplots[isp].data[0], row=irow+1, col=icol+1)
+        isp = isp + 1
+
+for isp, subplot in enumerate(subplots):
+    fig.layout.annotations += subplots[isp].layout.annotations
+
+# for isp, subplot in enumerate(subplots):
+#     if isp == 0:
+#         fig.update_layout(subplots[isp].layout)
+#     else:
+#         fig.layout.annotations += subplots[isp].layout.annotations
+
+# - https://github.com/plotly/plotly.py/issues/2313
+# fig1 = ff.create_annotated_heatmap(z)
+# fig2 = ff.create_annotated_heatmap(z)
+# for annot in fig2['layout']['annotations']:
+#     annot['xref'] = 'x2'
+# fig = make_subplots(rows=1, cols=2)
+# fig.add_trace(fig1.data[0], row=1, col=1)
+# fig.add_trace(fig2.data[0], row=1, col=2)
+# fig.update_layout(fig1.layout)
+# fig.layout.annotations += fig2.layout.annotations
+
+fig.show()
+
 ## - TEST 2
 # https://plotly.com/python/subplots/
 
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
-
-dfesm = dfe.drop(columns=['Daily_EIR_elim', 'New_Clinical_Cases_elim', 'Run_Number'])
 
 
 def df_to_plotly(df):
@@ -96,17 +176,18 @@ ov_xvar_vals = [0, 0.1, 0.2]  # subset or all vals
 ov_yvar_vals = [0, 0.05, 0.1, 0.15]  # subset or all vals
 
 subplot_titles = []
-isp = 0
 for ov_yvar_val in ov_yvar_vals:
     for ov_xvar_val in ov_xvar_vals:
         subplot_titles.append(ov_xvar + '=' + str(ov_xvar_val) + ', ' + ov_yvar + '=' + str(ov_yvar_val))
 
-##
 fig = make_subplots(
     rows=len(ov_yvar_vals), cols=len(ov_xvar_vals),
-    subplot_titles=subplot_titles
+    subplot_titles=subplot_titles,
+    horizontal_spacing=0.025,
+    vertical_spacing=0.075
 )
 
+isp = 1
 for irow, ov_yvar_val in enumerate(ov_yvar_vals):
     for icol, ov_xvar_val in enumerate(ov_xvar_vals):
         allvardefsnow = {k: v for k, v in allvardefs.items() if k not in [mat_xvar, mat_yvar, ov_xvar, ov_yvar]}
@@ -122,22 +203,39 @@ for irow, ov_yvar_val in enumerate(ov_yvar_vals):
         dfenownow = (dfenow.groupby([mat_xvar, mat_yvar])['True_Prevalence_elim'].sum() / num_seeds).reset_index()
         matnow = dfenownow.pivot_table(index=[mat_yvar], columns=[mat_xvar], values='True_Prevalence_elim')
 
-        fig.add_trace(go.Heatmap(df_to_plotly(matnow),
-                                 #x=[str(lab) for lab in allvarvals[mat_xvar]],
-                                 #y=[str(lab) for lab in allvarvals[mat_yvar]],
-                                 #labels=dict(x=mat_xvar, y=mat_yvar, color="Elim frac"),
+        fig.add_trace(go.Heatmap(z=matnow.values,
+                                 x=[str(lab) for lab in allvarvals[mat_xvar]],
+                                 y=[str(lab) for lab in allvarvals[mat_yvar]],
+                                 # labels=dict(x=mat_xvar, y=mat_yvar, color="Elim frac"),
                                  colorscale='viridis',
-                                 coloraxis='coloraxis'),
+                                 coloraxis='coloraxis',
+                                 hovertemplate=mat_xvar + ': %{x}<br>' + mat_yvar + ': %{y}<br>Elim prob: %{z}<extra></extra>'),
                       row=irow + 1, col=icol + 1)
 
+        # fig.add_trace(go.Scatter(x=[str(lab) for lab in allvarvals[mat_xvar]],
+        #                          y=[str(lab) for lab in allvarvals[mat_yvar]],
+        #                          text=matnow.values.astype(str), mode="text"),
+        #               row=irow+1, col=icol+1)
 
+        # annotations = go.Annotations()
+        # for n, row in enumerate(matnow.values):
+        #     for m, val in enumerate(row):
+        #         annotations.append(go.layout.Annotation(text=str(matnow.values[n][m]),
+        #                                                 x=allvarvals[mat_xvar][m],
+        #                                                 y=allvarvals[mat_yvar][n],
+        #                                                 xref='x'+str(isp), yref='y1'+str(isp), showarrow=False))
+        # isp = isp+1
+
+        # fig.update_layout(annotations=annotations,
+        #                 yaxis={'title': mat_yvar}, xaxis={'title': mat_xvar})
+                          # yaxis_nticks=len(allvarvals[mat_yvar]), xaxis_nticks=len(allvarvals[mat_xvar]))
         # fig.add_trace(px.imshow(matnow,
         #                         labels=dict(x=mat_xvar, y=mat_yvar, color="Elim frac"),
         #                         x=[str(lab) for lab in allvarvals[mat_xvar]],
         #                         y=[str(lab) for lab in allvarvals[mat_yvar]]),
         #               row=irow+1, col=icol+1)
 
-fig.update_layout(coloraxis={'colorscale': 'viridis'})
+fig.update_layout(coloraxis={'colorscale': 'viridis'}, title='Elim prob')
 # fig.update_layout(height=500, width=700,
 #                   title_text="Multiple Subplots with Titles")
 
