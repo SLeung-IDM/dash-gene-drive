@@ -77,6 +77,18 @@ dfe.rename(columns={'Time': 'time'}, inplace=True)
 dfesm = dfe.drop(columns=['Daily_EIR_elim', 'New_Clinical_Cases_elim', 'Run_Number'])
 
 ## - TEST 3
+
+# https://github.com/plotly/plotly.py/issues/2313
+# fig1 = ff.create_annotated_heatmap(z)
+# fig2 = ff.create_annotated_heatmap(z)
+# for annot in fig2['layout']['annotations']:
+#     annot['xref'] = 'x2'
+# fig = make_subplots(rows=1, cols=2)
+# fig.add_trace(fig1.data[0], row=1, col=1)
+# fig.add_trace(fig2.data[0], row=1, col=2)
+# fig.update_layout(fig1.layout)
+# fig.layout.annotations += fig2.layout.annotations
+
 from plotly.subplots import make_subplots
 import plotly.figure_factory as ff
 
@@ -87,13 +99,14 @@ ov_yvar = 'sne'
 ov_xvar_vals = [0, 0.1, 0.2]  # subset or all vals
 ov_yvar_vals = [0, 0.05, 0.1, 0.15]  # subset or all vals
 
+# - Compute subplot titles and heatmaps
 iaxis = 1
 subplots = []
 subplot_titles = []
 for ov_yvar_val in ov_yvar_vals:
     for ov_xvar_val in ov_xvar_vals:
-        subplot_titles.append(ov_xvar + '=' + str(ov_xvar_val) + ', ' + ov_yvar + '=' + str(ov_yvar_val))
 
+        # - Compute heatmap
         allvardefsnow = {k: v for k, v in allvardefs.items() if k not in [mat_xvar, mat_yvar, ov_xvar, ov_yvar]}
         dfenow = dfesm
         for k, v in allvardefsnow.items():
@@ -105,21 +118,25 @@ for ov_yvar_val in ov_yvar_vals:
         dfenownow = (dfenow.groupby([mat_xvar, mat_yvar])['True_Prevalence_elim'].sum() / num_seeds).reset_index()
         matnow = dfenownow.pivot_table(index=[mat_yvar], columns=[mat_xvar], values='True_Prevalence_elim')
 
+        # - Create annotated heatmap
         subplots.append(ff.create_annotated_heatmap(
             z=matnow.values,
             x=matnow.columns.tolist(),
             y=matnow.index.tolist(),
-            #x=[str(lab) for lab in allvarvals[mat_xvar]],
-            #y=[str(lab) for lab in allvarvals[mat_yvar]],
             coloraxis='coloraxis',
             hovertemplate=mat_xvar + ': %{x}<br>' + mat_yvar + ': %{y}<br>Elim prob: %{z}<extra></extra>')
         )
 
+        # - Update annotation axes
         for annot in subplots[-1]['layout']['annotations']:
             annot['xref'] = 'x' + str(iaxis)
             annot['yref'] = 'y' + str(iaxis)
         iaxis = iaxis + 1
 
+        # - Create subplot titles
+        subplot_titles.append(ov_xvar + '=' + str(ov_xvar_val) + ', ' + ov_yvar + '=' + str(ov_yvar_val))
+
+# - Set up subplot framework and titles
 fig = make_subplots(
     rows=len(ov_yvar_vals), cols=len(ov_xvar_vals),
     subplot_titles=subplot_titles,
@@ -127,31 +144,29 @@ fig = make_subplots(
     vertical_spacing=0.075
 )
 
+# - Create each subplot
 isp = 0
 for irow, ov_yvar_val in enumerate(ov_yvar_vals):
     for icol, ov_xvar_val in enumerate(ov_xvar_vals):
-        fig.add_trace(subplots[isp].data[0], row=irow+1, col=icol+1)
+        fig.add_trace(subplots[isp].data[0], row=irow + 1, col=icol + 1)
         isp = isp + 1
 
+# - Update annotations for all subplot
 for isp, subplot in enumerate(subplots):
     fig.layout.annotations += subplots[isp].layout.annotations
 
-# for isp, subplot in enumerate(subplots):
-#     if isp == 0:
-#         fig.update_layout(subplots[isp].layout)
-#     else:
-#         fig.layout.annotations += subplots[isp].layout.annotations
-
-# - https://github.com/plotly/plotly.py/issues/2313
-# fig1 = ff.create_annotated_heatmap(z)
-# fig2 = ff.create_annotated_heatmap(z)
-# for annot in fig2['layout']['annotations']:
-#     annot['xref'] = 'x2'
-# fig = make_subplots(rows=1, cols=2)
-# fig.add_trace(fig1.data[0], row=1, col=1)
-# fig.add_trace(fig2.data[0], row=1, col=2)
-# fig.update_layout(fig1.layout)
-# fig.layout.annotations += fig2.layout.annotations
+# - Update fig layout and subplot axes
+fig.update_layout(coloraxis={'colorscale': 'YlOrBr_r'}, title='Elim probabilities, ' + wi_name)
+fig.update_xaxes(
+    tickmode='array',
+    tickvals=allvarvals[mat_xvar],
+    ticktext=[str(val) for val in allvarvals[mat_xvar]]
+)
+fig.update_yaxes(
+    tickmode='array',
+    tickvals=allvarvals[mat_yvar],
+    ticktext=[str(val) for val in allvarvals[mat_yvar]]
+)
 
 fig.show()
 
@@ -228,7 +243,7 @@ for irow, ov_yvar_val in enumerate(ov_yvar_vals):
 
         # fig.update_layout(annotations=annotations,
         #                 yaxis={'title': mat_yvar}, xaxis={'title': mat_xvar})
-                          # yaxis_nticks=len(allvarvals[mat_yvar]), xaxis_nticks=len(allvarvals[mat_xvar]))
+        # yaxis_nticks=len(allvarvals[mat_yvar]), xaxis_nticks=len(allvarvals[mat_xvar]))
         # fig.add_trace(px.imshow(matnow,
         #                         labels=dict(x=mat_xvar, y=mat_yvar, color="Elim frac"),
         #                         x=[str(lab) for lab in allvarvals[mat_xvar]],
