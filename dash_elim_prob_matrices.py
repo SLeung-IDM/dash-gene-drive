@@ -89,6 +89,20 @@ app.layout = html.Div([
 
     html.Div([
         dcc.Dropdown(
+            id='outer-xvar',
+            options=[{'label': i, 'value': i} for i in list(allvarvals.keys())],
+            value='rr0')
+    ], style={'width': '49%', 'padding': '0px 20px 20px 20px'}),
+
+    html.Div([
+        dcc.Dropdown(
+            id='outer-yvar',
+            options=[{'label': i, 'value': i} for i in list(allvarvals.keys())],
+            value='sne')
+    ], style={'width': '49%', 'padding': '0px 20px 20px 20px'}),
+
+    html.Div([
+        dcc.Dropdown(
             id='matrix-xvar',
             options=[{'label': i, 'value': i} for i in list(allvarvals.keys())],
             value='rc')
@@ -102,28 +116,7 @@ app.layout = html.Div([
     ], style={'width': '49%', 'padding': '0px 20px 20px 20px'}),
 
     html.Div([
-        dcc.Slider(
-            id='rc-slider',
-            min=dfe['rc'].min(),
-            max=dfe['rc'].max(),
-            value=sv1_def,
-            marks={str(rc): str(rc) for rc in dfe['rc'].unique()},
-            step=None)
-    ], style={'width': '49%', 'padding': '0px 20px 20px 20px'}),
-
-    html.Div([
-        dcc.Slider(
-            id='d-slider',
-            min=dfe['d'].min(),
-            max=dfe['d'].max(),
-            value=sv2_def,
-            marks={str(d): str(d) for d in dfe['d'].unique()},
-            step=None
-        )
-    ], style={'width': '49%', 'padding': '0px 20px 20px 20px'}),
-
-    html.Div([
-        dcc.Graph(id='elim-prob-matrix')
+        dcc.Graph(id='elim-prob-matrices')
     ], style={'width': '49%', 'padding': '0px 20px 20px 20px'})
 ])
 
