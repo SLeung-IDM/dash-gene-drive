@@ -22,7 +22,6 @@ distrib_itns = True
 if distrib_itns == True:
     itn_distrib_days = [180, 3 * 365 + 180, 6 * 365 + 180]
 
-# - Write out sweep variable names and values
 allvardefs = {'rc': 1, 'd': 1, 'rr0': 0,
               'sne': 0, 'release_day': 180, 'num_nodes': 6}
 allvarvals = {'rc': [1, 0.9, 0.8, 0.7, 0.6, 0.5],
