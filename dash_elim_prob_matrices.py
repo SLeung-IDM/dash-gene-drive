@@ -181,8 +181,12 @@ def update_elim_prob_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
                 z=matnow.values,
                 x=matnow.columns.tolist(),
                 y=matnow.index.tolist(),
-                coloraxis='coloraxis',
-                hovertemplate=mat_xvar + ': %{x}<br>' + mat_yvar + ': %{y}<br>Elim prob: %{z}<extra></extra>')
+                zmax=1,
+                zmin=0,
+                # coloraxis='coloraxis',
+                # hovertemplate=mat_xvar + ': %{x}<br>' + mat_yvar + ': %{y}<br>Elim prob: %{z}<extra></extra>',
+                showscale=True,
+                colorscale='YlOrBr_r')
             )
 
             # - Update annotation axes
@@ -231,8 +235,9 @@ def update_elim_prob_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
         tickvals=allvarvals[mat_yvar],
         ticktext=[str(val) for val in allvarvals[mat_yvar]]
     )
+    # fig.update_coloraxes(colorscale='Viridis')
     fig.update_layout(margin=dict(l=60, r=50, b=50, t=30))
-    # fig.update_layout(coloraxis={'colorscale': 'YlOrBr_r'},
+    #                   coloraxis={'colorscale': 'YlOrBr_r'},
     #                   title='Elim probabilities, ' + wi_name,
     #                   transition_duration=500)
 
