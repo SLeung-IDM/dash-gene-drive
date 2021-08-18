@@ -157,9 +157,9 @@ app.layout = html.Div([
             ])
         ]),
 
-        dcc.Tab(label='Elimination days', children=[
+        dcc.Tab(label='Years to elimination', children=[
 
-            html.H2(children='Elim days: ' + wi_name_sh),
+            html.H2(children='Years to elim: ' + wi_name_sh),
 
             html.Div(children=[
 
