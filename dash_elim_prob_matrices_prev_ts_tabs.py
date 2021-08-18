@@ -22,9 +22,14 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 ##
 # -------- Load data
-wi_name = 'spatialinside_classic3allele_GM_only_aEIR30_sweep_rc_d_rr0_sne_release_day_release_node_num'
-wi_name_sh = 'spatial, classic drive, GM only, EIR = 30'
-data_dir = 'Z:\\home\\sleung\\workitems\\648\\d61\\287\\648d6128-78f9-eb11-a9ed-b88303911bc1'
+# - spatial, classic, GM only, EIR = 30
+# wi_name = 'spatialinside_classic3allele_GM_only_aEIR30_sweep_rc_d_rr0_sne_release_day_release_node_num'
+# wi_name_sh = 'spatial, classic drive, GM only, EIR = 30'
+# data_dir = 'Z:\\home\\sleung\\workitems\\648\\d61\\287\\648d6128-78f9-eb11-a9ed-b88303911bc1'
+# - spatial, classic, GM only, EIR = 10
+wi_name = 'spatialinside_classic3allele_GM_only_aEIR10_sweep_rc_d_rr0_sne_release_day_release_node_num'
+wi_name_sh = 'spatial, classic drive, GM only, EIR = 10'
+data_dir = 'Z:\\home\\sleung\\workitems\\d2b\\2a2\\f47\\d2b2a2f4-77f9-eb11-a9ed-b88303911bc1'
 
 num_yrs = 8  # length of sim
 elim_day = 2555  # day on which elim fraction is calculated

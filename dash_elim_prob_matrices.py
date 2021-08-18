@@ -246,4 +246,4 @@ def update_elim_prob_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
 
 ##
 if __name__ == '__main__':
-    app.run_server(debug=False)
+    app.run_server(debug=True, port=8050)
