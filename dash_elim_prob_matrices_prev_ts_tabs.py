@@ -381,9 +381,10 @@ def update_elim_day_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
             # dfednow = dfednow[dfednow['True_Prevalence_elim'] == True]
             dfednow.drop(columns=['True_Prevalence_elim'], inplace=True)
             dfednownow = (dfednow.groupby([mat_xvar, mat_yvar])['True_Prevalence_elim_day'].mean()).reset_index()
-            matnow = dfednownow.pivot_table(index=[mat_yvar], columns=[mat_xvar], values='True_Prevalence_elim_day',
-                                            dropna=False)
-            matnow = matnow.round(1)  # .astype('Int64')
+            matnow = dfednownow.pivot_table(index=[mat_yvar], columns=[mat_xvar],
+                                            values='True_Prevalence_elim_day', dropna=False)
+            # matnow = matnow.round(1)  # .astype('Int64')
+            matnow = (matnow/365).round(1)  # .astype('Int64')
             # z_text = [[str(y) for y in x] for x in matnow.values]
 
             # - Create annotated heatmap
@@ -392,8 +393,8 @@ def update_elim_day_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
                 x=matnow.columns.tolist(),
                 y=matnow.index.tolist(),
                 # annotation_text=z_text,
-                zmax=dfed['True_Prevalence_elim_day'].max(),
-                zmin=dfed['True_Prevalence_elim_day'].min(),
+                zmax=(dfed['True_Prevalence_elim_day']/365).max(),
+                zmin=(dfed['True_Prevalence_elim_day']/365).min(),
                 showscale=True,
                 colorscale='YlOrBr')
             )
@@ -430,11 +431,13 @@ def update_elim_day_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
 
     # - Update fig layout and subplot axes
     fig.update_xaxes(
+        ticklen=10,
         tickmode='array',
         tickvals=allvarvals[mat_xvar],
         ticktext=[str(val) for val in allvarvals[mat_xvar]]
     )
     fig.update_yaxes(
+        ticklen=10,
         tickmode='array',
         tickvals=allvarvals[mat_yvar],
         ticktext=[str(val) for val in allvarvals[mat_yvar]]
@@ -444,18 +447,18 @@ def update_elim_day_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
     return fig
 
 
-@app.callback(
-    Output('prev-ts', 'figure'),
-    [Input('outer-xvar1', 'value'),
-     Input('outer-yvar1', 'value'),
-     Input('sweep-var1', 'value'),
-     Input('sweep-var2', 'value')])
-def update_prev_ts(ov_xvar, ov_yvar, svar1, svar2):
-    # - Get all outer xvar and yvar vals
-    ov_xvar_vals = allvarvals[ov_xvar]
-    ov_yvar_vals = allvarvals[ov_yvar]
-    # CONTINUE HERE...
-    # return fig
+# @app.callback(
+#     Output('prev-ts', 'figure'),
+#     [Input('outer-xvar1', 'value'),
+#      Input('outer-yvar1', 'value'),
+#      Input('sweep-var1', 'value'),
+#      Input('sweep-var2', 'value')])
+# def update_prev_ts(ov_xvar, ov_yvar, svar1, svar2):
+#     # - Get all outer xvar and yvar vals
+#     ov_xvar_vals = allvarvals[ov_xvar]
+#     ov_yvar_vals = allvarvals[ov_yvar]
+#     # CONTINUE HERE...
+#     # return fig
 
 
 ##

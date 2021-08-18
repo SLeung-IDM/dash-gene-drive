@@ -167,11 +167,13 @@ for isp, subplot in enumerate(subplots):
 
 # - Update fig layout and subplot axes
 fig.update_xaxes(
+    ticklen=10,
     tickmode='array',
     tickvals=allvarvals[mat_xvar],
     ticktext=[str(val) for val in allvarvals[mat_xvar]]
 )
 fig.update_yaxes(
+    ticklen=10,
     tickmode='array',
     tickvals=allvarvals[mat_yvar],
     ticktext=[str(val) for val in allvarvals[mat_yvar]]
