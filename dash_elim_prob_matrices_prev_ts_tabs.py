@@ -468,4 +468,4 @@ def update_elim_day_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
 
 ##
 if __name__ == '__main__':
-    app.run_server(debug=True, port=8080)
+    app.run_server(debug=False, port=8080)
