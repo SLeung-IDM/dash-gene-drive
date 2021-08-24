@@ -7,9 +7,14 @@ from plotly.subplots import make_subplots
 
 ##
 # -------- Load data
+# - spatial, classic, GM only, EIR = 30
 wi_name = 'spatialinside_classic3allele_GM_only_aEIR30_sweep_rc_d_rr0_sne_release_day_release_node_num'
 wi_name_sh = 'spatial, classic drive, GM only, EIR = 30'
 data_dir = 'Z:\\home\\sleung\\workitems\\648\\d61\\287\\648d6128-78f9-eb11-a9ed-b88303911bc1'
+# - spatial, classic, GM only, EIR = 10
+# wi_name = 'spatialinside_classic3allele_GM_only_aEIR10_sweep_rc_d_rr0_sne_release_day_release_node_num'
+# wi_name_sh = 'spatial, classic drive, GM only, EIR = 10'
+# data_dir = 'Z:\\home\\sleung\\workitems\\d2b\\2a2\\f47\\d2b2a2f4-77f9-eb11-a9ed-b88303911bc1'
 
 num_yrs = 8  # length of sim
 elim_day = 2555  # day on which elim fraction is calculated
@@ -43,6 +48,7 @@ allvarvals_fns = {'rc': [1, 0.9, 0.8, 0.7, 0.6, 0.5],
 partition_vars = ['num_nodes', 'd', 'rr0']
 partition_vars_vals = [allvarvals_fns['num_nodes'], allvarvals_fns['d'], allvarvals_fns['rr0']]
 
+'''
 file_suffix_ls = []
 
 for partition_vars_val0 in partition_vars_vals[0]:
@@ -53,46 +59,154 @@ for partition_vars_val0 in partition_vars_vals[0]:
             fsendtemp = partition_vars[2] + str(partition_vars_val2)
             file_suffix_ls.append(fsbegtemp + '_' + fsmidtemp + '_' + fsendtemp)
 
-# dfi = pd.DataFrame()
+dfi = pd.DataFrame()
 # dfa = pd.DataFrame()
 # dfe = pd.DataFrame()
-dfed = pd.DataFrame()
+# dfed = pd.DataFrame()
 for file_suffix in file_suffix_ls:
-    # filei = os.path.join(data_dir, wi_name + '_inset_data_' + file_suffix + '.csv')
+    filei = os.path.join(data_dir, wi_name + '_inset_data_' + file_suffix + '.csv')
     # filea = os.path.join(data_dir, wi_name + '_spatial_avg_allele_freqs_' + file_suffix + '.csv')
     # filee = os.path.join(data_dir, wi_name + '_inset_data_elim_day_'
-    #                     + str(elim_day) + '_indiv_sims_' + file_suffix + '.csv')
-    fileed = os.path.join(data_dir, wi_name + '_inset_data_elim_day_number_indiv_sims_' + file_suffix + '.csv')
-    # dfi = dfi.append(
-    #     pd.read_csv(filei, usecols=list(allvarvals_fns.keys()) +
-    #                                ['Time', 'True Prevalence', 'PfHRP2 Prevalence',
-    #                                 'True Prevalence_std', 'PfHRP2 Prevalence_std']
-    #                 )
-    # )
+    #                    + str(elim_day) + '_indiv_sims_' + file_suffix + '.csv')
+    # fileed = os.path.join(data_dir, wi_name + '_inset_data_elim_day_number_indiv_sims_' + file_suffix + '.csv')
+    dfi = dfi.append(pd.read_csv(filei))
     # dfa = dfa.append(pd.read_csv(filea))
     # dfe = dfe.append(pd.read_csv(filee))
-    dfed = dfed.append(pd.read_csv(fileed))
+    # dfed = dfed.append(pd.read_csv(fileed))
 
 # - Clean up data
-# if 'Unnamed: 0' in dfi.columns:
-#    dfi = dfi.drop('Unnamed: 0', axis=1)
+if 'Unnamed: 0' in dfi.columns:
+    dfi = dfi.drop('Unnamed: 0', axis=1)
 # if 'Unnamed: 0' in dfa.columns:
 #     dfa = dfa.drop('Unnamed: 0', axis=1)
 # if 'Unnamed: 0' in dfe.columns:
-#    dfe = dfe.drop('Unnamed: 0', axis=1)
-if 'Unnamed: 0' in dfed.columns:
-    dfed = dfed.drop('Unnamed: 0', axis=1)
+#     dfe = dfe.drop('Unnamed: 0', axis=1)
+# if 'Unnamed: 0' in dfed.columns:
+#     dfed = dfed.drop('Unnamed: 0', axis=1)
 # dfa.rename(columns={'Time': 'time'}, inplace=True)
 # dfe.rename(columns={'Time': 'time'}, inplace=True)
-dfed.rename(columns={'Time': 'time'}, inplace=True)
+# dfed.rename(columns={'Time': 'time'}, inplace=True)
+dfi.rename(columns={'Time': 'time'}, inplace=True)
 
 # - Further clean up data
-# dfesm = dfe.drop(columns=['Daily_EIR_elim', 'New_Clinical_Cases_elim', 'Run_Number'])
-# dfesm.rename(columns={'release_day': 'rd', 'num_nodes': 'nn'}, inplace=True)
-dfed.rename(columns={'release_day': 'rd', 'num_nodes': 'nn'}, inplace=True)
+# dfe = dfe.drop(columns=['Daily_EIR_elim', 'New_Clinical_Cases_elim', 'Run_Number'])
+# dfe.rename(columns={'release_day': 'rd', 'num_nodes': 'nn'}, inplace=True)
+# dfed = dfed.drop(columns=['True_Prevalence_elim'])
+# dfed.rename(columns={'release_day': 'rd', 'num_nodes': 'nn'}, inplace=True)
+dfi.rename(columns={'release_day': 'rd', 'num_nodes': 'nn'}, inplace=True)
+'''
+
+# dfp = dfi[['time', 'rc', 'd', 'rr0', 'sne', 'rd', 'nn', 'PfHRP2 Prevalence', 'PfHRP2 Prevalence_std']]
+# dfp.to_csv('prev.csv', index=False)
+dfp = pd.read_csv('prev.csv')
+dfp.rename(columns={'time': 'Time'}, inplace=True)
+
+pause
 
 ## - TEST 5
+# prevalence time series plots
+
+svar1 = 'd'
+svar2 = 'rc'
+ov_xvar = 'rr0'
+ov_yvar = 'sne'
+ov_xvar_vals = [0, 0.1, 0.2]  # subset or all vals
+ov_yvar_vals = [0, 0.05, 0.1, 0.15]  # subset or all vals
+dfpnow = dfp[(dfp['rd'] == 180) & (dfp['nn'] == 6)]
+
+fig = px.line(dfpnow, x='Time', y='PfHRP2 Prevalence', color=svar2, line_dash=svar1,
+              facet_col=ov_xvar, facet_row=ov_yvar)
+fig.show()
+
+##
+'''
+# - Compute subplot titles and heatmaps
+iaxis = 1
+subplots = []
+
+for ov_yvar_val in ov_yvar_vals:
+    for ov_xvar_val in ov_xvar_vals:
+
+        # - Compute heatmap
+        allvardefsnow = {k: v for k, v in allvardefs.items() if k not in [mat_xvar, mat_yvar, ov_xvar, ov_yvar]}
+        dfednow = dfed
+        for k, v in allvardefsnow.items():
+            dfednow = dfednow[dfednow[k] == v]
+            dfednow.drop(columns=[k], inplace=True)
+        dfednow = dfednow[dfednow[ov_xvar] == ov_xvar_val]
+        dfednow = dfednow[dfednow[ov_yvar] == ov_yvar_val]
+        dfednow.drop(columns=[ov_xvar, ov_yvar], inplace=True)
+        # dfednow = dfednow[dfednow['True_Prevalence_elim'] == True]
+        dfednow.drop(columns=['True_Prevalence_elim'], inplace=True)
+        dfednownow = (dfednow.groupby([mat_xvar, mat_yvar])['True_Prevalence_elim_day'].mean()).reset_index()
+        matnow = dfednownow.pivot_table(index=[mat_yvar], columns=[mat_xvar], values='True_Prevalence_elim_day', dropna=False)
+        matnow = matnow.round(1)  #.astype('Int64')
+        # z_text = [[str(y) for y in x] for x in matnow.values]
+
+        # - Create annotated heatmap
+        subplots.append(ff.create_annotated_heatmap(
+            z=matnow.values,
+            x=matnow.columns.tolist(),
+            y=matnow.index.tolist(),
+            # annotation_text=z_text,
+            zmax=dfed['True_Prevalence_elim_day'].max(),
+            zmin=dfed['True_Prevalence_elim_day'].min(),
+            showscale=True,
+            colorscale='YlOrBr')
+        )
+
+        # - Update annotation axes
+        for annot in subplots[-1]['layout']['annotations']:
+            annot['xref'] = 'x' + str(iaxis)
+            annot['yref'] = 'y' + str(iaxis)
+        iaxis = iaxis + 1
+
+# - Set up subplot framework and titles
+fig = make_subplots(
+    rows=len(ov_yvar_vals), cols=len(ov_xvar_vals),
+    shared_xaxes=True,
+    shared_yaxes=True,
+    column_titles=[ov_xvar + '=' + str(val) for val in ov_xvar_vals],
+    row_titles=[ov_yvar + '=' + str(val) for val in ov_yvar_vals],
+    x_title=mat_xvar,
+    y_title=mat_yvar,
+    horizontal_spacing=0.03,
+    vertical_spacing=0.03
+)
+
+# - Create each subplot
+isp = 0
+for irow, ov_yvar_val in enumerate(ov_yvar_vals):
+    for icol, ov_xvar_val in enumerate(ov_xvar_vals):
+        fig.add_trace(subplots[isp].data[0], row=irow + 1, col=icol + 1)
+        isp = isp + 1
+
+# - Update annotations for all subplot
+for isp, subplot in enumerate(subplots):
+    fig.layout.annotations += subplots[isp].layout.annotations
+
+# - Update fig layout and subplot axes
+fig.update_xaxes(
+    ticklen=10,
+    tickmode='array',
+    tickvals=allvarvals[mat_xvar],
+    ticktext=[str(val) for val in allvarvals[mat_xvar]]
+)
+fig.update_yaxes(
+    ticklen=10,
+    tickmode='array',
+    tickvals=allvarvals[mat_yvar],
+    ticktext=[str(val) for val in allvarvals[mat_yvar]]
+)
+fig.update_layout(margin=dict(l=60, r=50, b=50, t=30))
+
+fig.show()
+'''
+
+## - TEST 4
 # elim day matrices
+
+'''
 mat_xvar = 'rc'
 mat_yvar = 'd'
 ov_xvar = 'rr0'
@@ -181,9 +295,7 @@ fig.update_yaxes(
 fig.update_layout(margin=dict(l=60, r=50, b=50, t=30))
 
 fig.show()
-
-## - TEST 4
-# prevalence time series plots
+'''
 
 ## - TEST 3
 
