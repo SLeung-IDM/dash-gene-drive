@@ -22,6 +22,11 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 ##
 # -------- Load data
+# - spatial, integral, GM only, EIR = 30
+# wi_name = 'spatialinside_integral2l4a_GM_only_aEIR30_sweep_rc_d1_rr20_se2'
+# wi_name_sh = 'spatial, integral drive, GM only, EIR = 30'
+# data_dir = 'Z:\\home\\sleung\\workitems\\bf3\\d9c\\256\\bf3d9c25-6b04-ec11-a9ed-b88303911bc1'
+# - spatial, integral, GM only, EIR = 10
 # - spatial, classic, GM only, EIR = 30
 wi_name = 'spatialinside_classic3allele_GM_only_aEIR30_sweep_rc_d_rr0_sne_release_day_release_node_num'
 wi_name_sh = 'spatial, classic drive, GM only, EIR = 30'
@@ -35,7 +40,6 @@ num_yrs = 8  # length of sim
 elim_day = 2555  # day on which elim fraction is calculated
 af_hm_day = 365 * 8 - 1  # day on which end of sim allele freq is calculated
 num_seeds = 20  # num of seeds per sim
-drive_type = "classic"  # choose: classic, integral
 
 released_mosqs = True
 if released_mosqs == True:
@@ -105,6 +109,9 @@ dfed.rename(columns={'Time': 'time'}, inplace=True)
 dfe = dfe.drop(columns=['Daily_EIR_elim', 'New_Clinical_Cases_elim', 'Run_Number'])
 dfe.rename(columns={'release_day': 'rd', 'num_nodes': 'nn'}, inplace=True)
 dfed.rename(columns={'release_day': 'rd', 'num_nodes': 'nn'}, inplace=True)
+
+dfp = pd.read_csv('prev.csv')
+dfp.rename(columns={'time': 'Time'}, inplace=True)
 
 ##
 app.layout = html.Div([
@@ -230,27 +237,27 @@ app.layout = html.Div([
                 ], style={'width': '10%'}),
 
                 html.Div(children=[
-                    html.Label(['1st sweep var:'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    html.Label(['1st sweep var (color):'], style={'font-weight': 'bold', 'text-align': 'center'}),
                     dcc.Dropdown(
-                        id='sweep-var1',
+                        id='sweep-var2-0',
                         options=[{'label': i, 'value': i} for i in list(allvarvals.keys())],
                         value='rr0')
                 ], style={'width': '10%'}),
 
                 html.Div(children=[
-                    html.Label(['2nd sweep var:'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    html.Label(['2nd sweep var (line style):'], style={'font-weight': 'bold', 'text-align': 'center'}),
                     dcc.Dropdown(
-                        id='sweep-var2',
+                        id='sweep-var2-1',
                         options=[{'label': i, 'value': i} for i in list(allvarvals.keys())],
                         value='sne')
                 ], style={'width': '10%'}),
 
             ], style=dict(display='flex')),
 
-            # html.Div([
-            #     dcc.Graph(id='prev-ts',
-            #               style={'width': '95%', 'height': '80vh'})
-            # ])
+            html.Div([
+                dcc.Graph(id='prev-ts',
+                          style={'width': '95%', 'height': '80vh'})
+            ])
         ])
     ])
 
@@ -452,18 +459,22 @@ def update_elim_day_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
     return fig
 
 
-# @app.callback(
-#     Output('prev-ts', 'figure'),
-#     [Input('outer-xvar1', 'value'),
-#      Input('outer-yvar1', 'value'),
-#      Input('sweep-var1', 'value'),
-#      Input('sweep-var2', 'value')])
-# def update_prev_ts(ov_xvar, ov_yvar, svar1, svar2):
-#     # - Get all outer xvar and yvar vals
-#     ov_xvar_vals = allvarvals[ov_xvar]
-#     ov_yvar_vals = allvarvals[ov_yvar]
-#     # CONTINUE HERE...
-#     # return fig
+@app.callback(
+    Output('prev-ts', 'figure'),
+    [Input('outer-xvar1', 'value'),
+     Input('outer-yvar1', 'value'),
+     Input('sweep-var2-0', 'value'),
+     Input('sweep-var2-1', 'value')])
+def update_prev_ts(ov_xvar, ov_yvar, svar0, svar1):
+    allvardefsnow = {k: v for k, v in allvardefs.items() if k not in [svar0, svar1, ov_xvar, ov_yvar]}
+    dfpnow = dfp
+    for k, v in allvardefsnow.items():
+        dfpnow = dfpnow[dfpnow[k] == v]
+        dfpnow.drop(columns=[k], inplace=True)
+
+    fig = px.line(dfpnow, x='Time', y='PfHRP2 Prevalence', color=svar0, line_dash=svar1,
+                  facet_col=ov_xvar, facet_row=ov_yvar)
+    return fig
 
 
 ##
