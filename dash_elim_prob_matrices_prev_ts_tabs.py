@@ -256,7 +256,7 @@ app.layout = html.Div([
 
             html.Div([
                 dcc.Graph(id='prev-ts',
-                          style={'width': '95%', 'height': '80vh'})
+                          style={'width': '100%', 'height': '80vh'})
             ])
         ])
     ])
@@ -461,8 +461,8 @@ def update_elim_day_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
 
 @app.callback(
     Output('prev-ts', 'figure'),
-    [Input('outer-xvar1', 'value'),
-     Input('outer-yvar1', 'value'),
+    [Input('outer-xvar2', 'value'),
+     Input('outer-yvar2', 'value'),
      Input('sweep-var2-0', 'value'),
      Input('sweep-var2-1', 'value')])
 def update_prev_ts(ov_xvar, ov_yvar, svar0, svar1):
@@ -472,7 +472,8 @@ def update_prev_ts(ov_xvar, ov_yvar, svar0, svar1):
         dfpnow = dfpnow[dfpnow[k] == v]
         dfpnow.drop(columns=[k], inplace=True)
 
-    fig = px.line(dfpnow, x='Time', y='PfHRP2 Prevalence', color=svar0, line_dash=svar1,
+    fig = px.line(dfpnow, x='Time', y='PfHRP2 Prevalence',
+                  color=svar0, line_dash=svar1,
                   facet_col=ov_xvar, facet_row=ov_yvar)
     return fig
 
