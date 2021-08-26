@@ -22,79 +22,154 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 ##
 # -------- Load data
-# - spatial, integral, GM only, EIR = 30
+# -- spatial, integral, VC and GM, EIR = 80
+# wi_name = 'spatialinside_integral2l4a_VC_and_GM_aEIR80_sweep_rc_d1_rr20_se2'
+# wi_name_sh = 'spatial, integral drive, VC and GM, EIR = 80'
+# data_dir = 'Y:\\home\\sleung\\workitems\\41d\\361\\795\\41d36179-5605-ec11-a9ed-b88303911bc1'
+
+# -- spatial, classic, VC and GM, EIR = 80
+# -- NOT DONE ANALYZING YET
+# wi_name = 'spatialinside_classic3allele_VC_and_GM_aEIR80_sweep_rc_d_rr0_sne_release_day_release_node_num'
+# wi_name_sh = 'spatial, classic drive, VC and GM, EIR = 80'
+# data_dir = 'Z:\\home\\sleung\\workitems\\5de\\cc6\\036\\5decc603-6a04-ec11-a9ed-b88303911bc1'
+
+# -- spatial, integral, VC and GM, EIR = 30
+# wi_name = 'spatialinside_integral2l4a_VC_and_GM_aEIR30_sweep_rc_d1_rr20_se2'
+# wi_name_sh = 'spatial, integral drive, VC and GM, EIR = 30'
+# data_dir = 'Y:\\home\\sleung\\workitems\\789\\292\\b25\\789292b2-5505-ec11-a9ed-b88303911bc1'
+
+# -- spatial, classic, VC and GM, EIR = 30
+# wi_name = 'spatialinside_classic3allele_VC_and_GM_aEIR30_sweep_rc_d_rr0_sne'
+# wi_name_sh = 'spatial, classic drive, VC and GM, EIR = 30'
+# data_dir = 'Y:\\home\\sleung\\workitems\\a82\\f7d\\335\\a82f7d33-5705-ec11-a9ed-b88303911bc1'
+
+# -- spatial, integral, GM only, EIR = 30
 # wi_name = 'spatialinside_integral2l4a_GM_only_aEIR30_sweep_rc_d1_rr20_se2'
 # wi_name_sh = 'spatial, integral drive, GM only, EIR = 30'
 # data_dir = 'Z:\\home\\sleung\\workitems\\bf3\\d9c\\256\\bf3d9c25-6b04-ec11-a9ed-b88303911bc1'
-# - spatial, integral, GM only, EIR = 10
-# - spatial, classic, GM only, EIR = 30
-wi_name = 'spatialinside_classic3allele_GM_only_aEIR30_sweep_rc_d_rr0_sne_release_day_release_node_num'
-wi_name_sh = 'spatial, classic drive, GM only, EIR = 30'
-data_dir = 'Z:\\home\\sleung\\workitems\\648\\d61\\287\\648d6128-78f9-eb11-a9ed-b88303911bc1'
-# - spatial, classic, GM only, EIR = 10
-# wi_name = 'spatialinside_classic3allele_GM_only_aEIR10_sweep_rc_d_rr0_sne_release_day_release_node_num'
-# wi_name_sh = 'spatial, classic drive, GM only, EIR = 10'
-# data_dir = 'Z:\\home\\sleung\\workitems\\d2b\\2a2\\f47\\d2b2a2f4-77f9-eb11-a9ed-b88303911bc1'
+
+# -- spatial, classic, GM only, EIR = 30
+# wi_name = 'spatialinside_classic3allele_GM_only_aEIR30_sweep_rc_d_rr0_sne_release_day_release_node_num'
+# wi_name_sh = 'spatial, classic drive, GM only, EIR = 30'
+# data_dir = 'Z:\\home\\sleung\\workitems\\648\\d61\\287\\648d6128-78f9-eb11-a9ed-b88303911bc1'
+
+# -- spatial, integral, VC and GM, EIR = 10
+# wi_name = 'spatialinside_integral2l4a_VC_and_GM_aEIR10_sweep_rc_d1_rr20_se2'
+# wi_name_sh = 'spatial, integral drive, VC and GM, EIR = 10'
+# data_dir = 'Y:\\home\\sleung\\workitems\\827\\ee8\\3d5\\827ee83d-5605-ec11-a9ed-b88303911bc1'
+
+# -- spatial, classic, VC and GM, EIR = 10
+# wi_name = 'spatialinside_classic3allele_VC_and_GM_aEIR10_sweep_rc_d_rr0_sne'
+# wi_name_sh = 'spatial, classic drive, VC and GM, EIR = 10'
+# data_dir = 'Y:\\home\\sleung\\workitems\\ba2\\a75\\a15\\ba2a75a1-5705-ec11-a9ed-b88303911bc1'
+
+# -- spatial, integral, GM only, EIR = 10
+# wi_name = 'spatialinside_integral2l4a_GM_only_aEIR10_sweep_rc_d1_rr20_se2'
+# wi_name_sh = 'spatial, integral drive, GM only, EIR = 10'
+# data_dir = 'Y:\\home\\sleung\\workitems\\cd0\\917\\d95\\cd0917d9-5205-ec11-a9ed-b88303911bc1'
+
+# -- spatial, classic, GM only, EIR = 10
+wi_name = 'spatialinside_classic3allele_GM_only_aEIR10_sweep_rc_d_rr0_sne_release_day_release_node_num'
+wi_name_sh = 'spatial, classic drive, GM only, EIR = 10'
+data_dir = 'Z:\\home\\sleung\\workitems\\d2b\\2a2\\f47\\d2b2a2f4-77f9-eb11-a9ed-b88303911bc1'
+
+num_sweep_vars = 6  # choose 4, 6
+num_partition_vars = 3  # choose 0, 1, 3
+drive_type = 'classic'  # choose integral, classic
+
+distrib_itns = True
+if distrib_itns == True:
+    itn_distrib_days = [180, 3 * 365 + 180, 6 * 365 + 180]
+
+released_mosqs = True
+if released_mosqs == True:
+    released_day = 180
 
 num_yrs = 8  # length of sim
 elim_day = 2555  # day on which elim fraction is calculated
 af_hm_day = 365 * 8 - 1  # day on which end of sim allele freq is calculated
 num_seeds = 20  # num of seeds per sim
 
-released_mosqs = True
-if released_mosqs == True:
-    released_day = 180
+if num_sweep_vars == 6:
+    if drive_type == 'classic':
+        allvardefs = {'rc': 1, 'd': 1, 'rr0': 0, 'sne': 0,
+                      'rd': 180, 'nn': 6}
+        allvarvals = {'rc': [1, 0.9, 0.8, 0.7, 0.6, 0.5],
+                      'd': [1, 0.95, 0.9],
+                      'rr0': [0, 0.1, 0.2],
+                      'sne': [0, 0.05, 0.1, 0.15, 0.2],
+                      'rd': [180, 240, 300, 360, 420, 480, 545],
+                      'nn': [6, 12]}
+        allvarvals_fns = {'rc': [1, 0.9, 0.8, 0.7, 0.6, 0.5],
+                          'd': [1, 0.95, 0.9],
+                          'rr0': [0, 0.1, 0.2],
+                          'sne': [0, 0.05, 0.1, 0.15, 0.2],
+                          'release_day': [180, 240, 300, 360, 420, 480, 545],
+                          'num_nodes': [6, 12]}
+elif num_sweep_vars == 4:
+    if drive_type == 'classic':
+        allvardefs = {'rc': 1, 'd': 1, 'rr0': 0, 'sne': 0}
+        allvarvals = {'rc': [1, 0.9, 0.8, 0.7, 0.6, 0.5],
+                      'd': [1, 0.95, 0.9],
+                      'rr0': [0, 0.1, 0.2],
+                      'sne': [0, 0.05, 0.1, 0.15, 0.2]}
+        allvarvals_fns = {'rc': [1, 0.9, 0.8, 0.7, 0.6, 0.5],
+                          'd': [1, 0.95, 0.9],
+                          'rr0': [0, 0.1, 0.2],
+                          'sne': [0, 0.05, 0.1, 0.15, 0.2]}
+    elif drive_type == 'integral':
+        allvardefs = {'rc': 1, 'd1': 1, 'rr20': 0, 'se2': 0}
+        allvarvals = {'rc': [1, 0.9, 0.8, 0.7, 0.6, 0.5],
+                      'd1': [1, 0.95, 0.9],
+                      'rr20': [0, 0.1, 0.2],
+                      'se2': [0, 0.05, 0.1, 0.15, 0.2]}
+        allvarvals_fns = {'rc': [1, 0.9, 0.8, 0.7, 0.6, 0.5],
+                          'd1': [1, 0.95, 0.9],
+                          'rr20': [0, 0.1, 0.2],
+                          'se2': [0, 0.05, 0.1, 0.15, 0.2]}
 
-distrib_itns = True
-if distrib_itns == True:
-    itn_distrib_days = [180, 3 * 365 + 180, 6 * 365 + 180]
-
-allvardefs = {'rc': 1, 'd': 1, 'rr0': 0,
-              'sne': 0, 'rd': 180, 'nn': 6}
-allvarvals = {'rc': [1, 0.9, 0.8, 0.7, 0.6, 0.5],
-              'd': [1, 0.95, 0.9],
-              'rr0': [0, 0.1, 0.2],
-              'sne': [0, 0.05, 0.1, 0.15, 0.2],
-              'rd': [180, 240, 300, 360, 420, 480, 545],
-              'nn': [6, 12]}
-
-allvarvals_fns = {'rc': [1, 0.9, 0.8, 0.7, 0.6, 0.5],
-                  'd': [1, 0.95, 0.9],
-                  'rr0': [0, 0.1, 0.2],
-                  'sne': [0, 0.05, 0.1, 0.15, 0.2],
-                  'release_day': [180, 240, 300, 360, 420, 480, 545],
-                  'num_nodes': [6, 12]}
-partition_vars = ['num_nodes', 'd', 'rr0']
-partition_vars_vals = [allvarvals_fns['num_nodes'], allvarvals_fns['d'], allvarvals_fns['rr0']]
-
-file_suffix_ls = []
-
-for partition_vars_val0 in partition_vars_vals[0]:
-    fsbegtemp = partition_vars[0] + str(partition_vars_val0)
-    for partition_vars_val1 in partition_vars_vals[1]:
-        fsmidtemp = partition_vars[1] + str(partition_vars_val1)
-        for partition_vars_val2 in partition_vars_vals[2]:
-            fsendtemp = partition_vars[2] + str(partition_vars_val2)
-            file_suffix_ls.append(fsbegtemp + '_' + fsmidtemp + '_' + fsendtemp)
-
-# dfi = pd.DataFrame()
-# dfa = pd.DataFrame()
-dfe = pd.DataFrame()
-dfed = pd.DataFrame()
-for file_suffix in file_suffix_ls:
-    # filei = os.path.join(data_dir, wi_name + '_inset_data_' + file_suffix + '.csv')
-    # filea = os.path.join(data_dir, wi_name + '_spatial_avg_allele_freqs_' + file_suffix + '.csv')
-    filee = os.path.join(data_dir, wi_name + '_inset_data_elim_day_'
-                         + str(elim_day) + '_indiv_sims_' + file_suffix + '.csv')
-    fileed = os.path.join(data_dir, wi_name + '_inset_data_elim_day_number_indiv_sims_' + file_suffix + '.csv')
-    # dfi = dfi.append(pd.read_csv(filei))
-    # dfa = dfa.append(pd.read_csv(filea))
-    dfe = dfe.append(pd.read_csv(filee))
-    dfed = dfed.append(pd.read_csv(fileed))
+if num_partition_vars > 0:
+    if num_partition_vars == 1:
+        partition_vars = ['d1']
+        partition_vars_vals = [allvarvals_fns['d1']]
+        file_suffix_ls = []
+        for partition_vars_val0 in partition_vars_vals[0]:
+            fsbegtemp = partition_vars[0] + str(partition_vars_val0)
+            file_suffix_ls.append(fsbegtemp)
+    elif num_partition_vars == 3:
+        partition_vars = ['num_nodes', 'd', 'rr0']
+        partition_vars_vals = [allvarvals_fns['num_nodes'], allvarvals_fns['d'], allvarvals_fns['rr0']]
+        file_suffix_ls = []
+        for partition_vars_val0 in partition_vars_vals[0]:
+            fsbegtemp = partition_vars[0] + str(partition_vars_val0)
+            for partition_vars_val1 in partition_vars_vals[1]:
+                fsmidtemp = partition_vars[1] + str(partition_vars_val1)
+                for partition_vars_val2 in partition_vars_vals[2]:
+                    fsendtemp = partition_vars[2] + str(partition_vars_val2)
+                    file_suffix_ls.append(fsbegtemp + '_' + fsmidtemp + '_' + fsendtemp)
+    dfi = pd.DataFrame()
+    # dfa = pd.DataFrame()
+    dfe = pd.DataFrame()
+    dfed = pd.DataFrame()
+    for file_suffix in file_suffix_ls:
+        filei = os.path.join(data_dir, wi_name + '_inset_data_' + file_suffix + '.csv')
+        # filea = os.path.join(data_dir, wi_name + '_spatial_avg_allele_freqs_' + file_suffix + '.csv')
+        filee = os.path.join(data_dir, wi_name + '_inset_data_elim_day_'
+                             + str(elim_day) + '_indiv_sims_' + file_suffix + '.csv')
+        fileed = os.path.join(data_dir, wi_name + '_inset_data_elim_day_number_indiv_sims_' + file_suffix + '.csv')
+        dfi = dfi.append(pd.read_csv(filei))
+        # dfa = dfa.append(pd.read_csv(filea))
+        dfe = dfe.append(pd.read_csv(filee))
+        dfed = dfed.append(pd.read_csv(fileed))
+else:
+    dfi = pd.read_csv(os.path.join(data_dir, wi_name + '_inset_data.csv'))
+    dfa = pd.read_csv(os.path.join(data_dir, wi_name + '_spatial_avg_allele_freqs.csv'))
+    dfe = pd.read_csv(os.path.join(data_dir, wi_name + '_inset_data_elim_day_' + str(elim_day) + '_indiv_sims.csv'))
+    dfed = pd.read_csv(os.path.join(data_dir, wi_name + '_inset_data_elim_day_number_indiv_sims.csv'))
 
 # - Clean up data
-# if 'Unnamed: 0' in dfi.columns:
-#     dfi = dfi.drop('Unnamed: 0', axis=1)
+if 'Unnamed: 0' in dfi.columns:
+    dfi = dfi.drop('Unnamed: 0', axis=1)
 # if 'Unnamed: 0' in dfa.columns:
 #     dfa = dfa.drop('Unnamed: 0', axis=1)
 if 'Unnamed: 0' in dfe.columns:
@@ -106,12 +181,23 @@ dfe.rename(columns={'Time': 'time'}, inplace=True)
 dfed.rename(columns={'Time': 'time'}, inplace=True)
 
 # - Further clean up data
+dfi.rename(columns={'release_day': 'rd', 'num_nodes': 'nn'}, inplace=True)
+# dfa.rename(columns={'release_day': 'rd', 'num_nodes': 'nn'}, inplace=True)
 dfe = dfe.drop(columns=['Daily_EIR_elim', 'New_Clinical_Cases_elim', 'Run_Number'])
 dfe.rename(columns={'release_day': 'rd', 'num_nodes': 'nn'}, inplace=True)
 dfed.rename(columns={'release_day': 'rd', 'num_nodes': 'nn'}, inplace=True)
+if num_sweep_vars == 6:
+    if drive_type == 'classic':
+        dfi = dfi[['Time', 'rc', 'd', 'rr0', 'sne', 'rd', 'nn', 'PfHRP2 Prevalence', 'PfHRP2 Prevalence_std']]
+elif num_sweep_vars == 4:
+    if drive_type == 'classic':
+        dfi = dfi[['Time', 'rc', 'd', 'rr0', 'sne', 'PfHRP2 Prevalence', 'PfHRP2 Prevalence_std']]
+    elif drive_type == 'integral':
+        dfi = dfi[['Time', 'rc', 'd1', 'rr20', 'se2', 'PfHRP2 Prevalence', 'PfHRP2 Prevalence_std']]
 
-dfp = pd.read_csv('prev.csv')
-dfp.rename(columns={'time': 'Time'}, inplace=True)
+# ADD CODE TO SAVE OUT SMALLER CSV FILES HERE
+# dfp = pd.read_csv('prev.csv')
+# dfp.rename(columns={'time': 'Time'}, inplace=True)
 
 ##
 app.layout = html.Div([
@@ -223,7 +309,7 @@ app.layout = html.Div([
                     dcc.Dropdown(
                         id='outer-xvar2',
                         options=[{'label': i, 'value': i} for i in list(allvarvals.keys())],
-                        value='rc'
+                        value='rr0'
                     )
                 ], style={'width': '10%'}),
 
@@ -232,7 +318,7 @@ app.layout = html.Div([
                     dcc.Dropdown(
                         id='outer-yvar2',
                         options=[{'label': i, 'value': i} for i in list(allvarvals.keys())],
-                        value='d'
+                        value='sne'
                     )
                 ], style={'width': '10%'}),
 
@@ -241,7 +327,7 @@ app.layout = html.Div([
                     dcc.Dropdown(
                         id='sweep-var2-0',
                         options=[{'label': i, 'value': i} for i in list(allvarvals.keys())],
-                        value='rr0')
+                        value='rc')
                 ], style={'width': '10%'}),
 
                 html.Div(children=[
@@ -249,7 +335,7 @@ app.layout = html.Div([
                     dcc.Dropdown(
                         id='sweep-var2-1',
                         options=[{'label': i, 'value': i} for i in list(allvarvals.keys())],
-                        value='sne')
+                        value='d')
                 ], style={'width': '10%'}),
 
             ], style=dict(display='flex')),
@@ -467,12 +553,12 @@ def update_elim_day_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
      Input('sweep-var2-1', 'value')])
 def update_prev_ts(ov_xvar, ov_yvar, svar0, svar1):
     allvardefsnow = {k: v for k, v in allvardefs.items() if k not in [svar0, svar1, ov_xvar, ov_yvar]}
-    dfpnow = dfp
+    dfinow = dfi
     for k, v in allvardefsnow.items():
-        dfpnow = dfpnow[dfpnow[k] == v]
-        dfpnow.drop(columns=[k], inplace=True)
+        dfinow = dfinow[dfinow[k] == v]
+        dfinow.drop(columns=[k], inplace=True)
 
-    fig = px.line(dfpnow, x='Time', y='PfHRP2 Prevalence',
+    fig = px.line(dfinow, x='Time', y='PfHRP2 Prevalence',
                   color=svar0, line_dash=svar1,
                   facet_col=ov_xvar, facet_row=ov_yvar)
     return fig
