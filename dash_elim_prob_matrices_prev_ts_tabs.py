@@ -25,9 +25,9 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 # NEW RC X RELEASE_NUMBER RUNS
 # -- spatial, integral, VC and GM, EIR = 30
-# wi_name = 'spatialinside_integral2l4a_VC_and_GM_aEIR30_sweep_rc_release_number'
-# wi_name_sh = 'spatial, integral drive, VC and GM, EIR = 30'
-# data_dir = 'Y:\\home\\sleung\\workitems\\85c\\f99\\239\\85cf9923-920b-ec11-a9ed-b88303911bc1'
+wi_name = 'spatialinside_integral2l4a_VC_and_GM_aEIR30_sweep_rc_release_number'
+wi_name_sh = 'spatial, integral drive, VC and GM, EIR = 30'
+data_dir = 'Y:\\home\\sleung\\workitems\\85c\\f99\\239\\85cf9923-920b-ec11-a9ed-b88303911bc1'
 
 # -- spatial, classic, VC and GM, EIR = 30
 # wi_name = 'spatialinside_classic3allele_VC_and_GM_aEIR30_sweep_rc_release_number'
@@ -40,9 +40,9 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 # data_dir = 'Y:\\home\\sleung\\workitems\\52f\\74b\\719\\52f74b71-920b-ec11-a9ed-b88303911bc1'
 
 # -- spatial, classic, GM only, EIR = 30
-wi_name = 'spatialinside_classic3allele_GM_only_aEIR30_sweep_release_number'
-wi_name_sh = 'spatial, classic drive, GM only, EIR = 30'
-data_dir = 'Y:\\home\\sleung\\workitems\\23b\\ec6\\eb9\\23bec6eb-910b-ec11-a9ed-b88303911bc1'
+# wi_name = 'spatialinside_classic3allele_GM_only_aEIR30_sweep_release_number'
+# wi_name_sh = 'spatial, classic drive, GM only, EIR = 30'
+# data_dir = 'Y:\\home\\sleung\\workitems\\23b\\ec6\\eb9\\23bec6eb-910b-ec11-a9ed-b88303911bc1'
 
 
 # NEW RC X SNE/SE2 RUNS
@@ -177,14 +177,14 @@ elif num_sweep_vars == 4:
     if drive_type == 'classic':
         # NEW RC X RELEASE_NUMBER
         allvardefs = {
-            # 'rc': 0.6,  # VC and GM
-            'rc': 0.8,  # GM only
+            'rc': 0.6,  # VC and GM
+            # 'rc': 0.8,  # GM only
             'd': 0.95,
             'sne': 0.1,
             'rr0': 0.01}
         allvarvals = {
-            # 'rc': [0.7, 0.6],  # VC and GM
-            'rc': [0.8],  # GM only
+            'rc': [0.7, 0.6],  # VC and GM
+            # 'rc': [0.8],  # GM only
             'd': [0.95],
             'rr0': [0.01],
             'sne': [0.1],
@@ -214,14 +214,14 @@ elif num_sweep_vars == 4:
     elif drive_type == 'integral':
         # NEW RC X RELEASE_NUMBER
         allvardefs = {
-            # 'rc': 0.6,  # VC and GM
-            'rc': 0.8,  # GM only
+            'rc': 0.6,  # VC and GM
+            # 'rc': 0.8,  # GM only
             'd1': 0.95,
             'se2': 0.1,
             'rr20': 0.01}
         allvarvals = {
-            # 'rc': [0.7, 0.6],  # VC and GM
-            'rc': [0.8],  # GM only
+            'rc': [0.7, 0.6],  # VC and GM
+            # 'rc': [0.8],  # GM only
             'd1': [0.95],
             'rr20': [0.01],
             'se2': [0.1],
@@ -322,28 +322,28 @@ if drive_type == 'integral':
     dfi['rr20'] = 0.01
     dfi['d1'] = 0.95
     dfi['se2'] = 0.1
-    dfi['rc'] = 0.8  # GM only
+    # dfi['rc'] = 0.8  # GM only
     dfe['rr20'] = 0.01
     dfe['d1'] = 0.95
     dfe['se2'] = 0.1
-    dfe['rc'] = 0.8  # GM only
+    # dfe['rc'] = 0.8  # GM only
     dfed['rr20'] = 0.01
     dfed['d1'] = 0.95
     dfed['se2'] = 0.1
-    dfed['rc'] = 0.8  # GM only
+    # dfed['rc'] = 0.8  # GM only
 elif drive_type == 'classic':
     dfi['rr0'] = 0.01
     dfi['d'] = 0.95
     dfi['sne'] = 0.1
-    dfi['rc'] = 0.8  # GM only
+    # dfi['rc'] = 0.8  # GM only
     dfe['rr0'] = 0.01
     dfe['d'] = 0.95
     dfe['sne'] = 0.1
-    dfe['rc'] = 0.8  # GM only
+    # dfe['rc'] = 0.8  # GM only
     dfed['rr0'] = 0.01
     dfed['d'] = 0.95
     dfed['sne'] = 0.1
-    dfed['rc'] = 0.8  # GM only
+    # dfed['rc'] = 0.8  # GM only
 # NEW RC X SNE/SE2
 # if drive_type == 'integral':
 #     dfi['rr20'] = 0.01
@@ -380,7 +380,6 @@ elif num_sweep_vars == 4:
     #     dfi = dfi[['Time', 'rc', 'd', 'rr0', 'sne', 'PfHRP2 Prevalence', 'PfHRP2 Prevalence_std']]
     # elif drive_type == 'integral':
     #     dfi = dfi[['Time', 'rc', 'd1', 'rr20', 'se2', 'PfHRP2 Prevalence', 'PfHRP2 Prevalence_std']]
-
 
 # dfp = pd.read_csv('prev.csv')
 # dfp.rename(columns={'time': 'Time'}, inplace=True)
