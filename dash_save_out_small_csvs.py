@@ -661,14 +661,13 @@ def update_elim_day_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
             dfednow = dfednow[dfednow[ov_xvar] == ov_xvar_val]
             dfednow = dfednow[dfednow[ov_yvar] == ov_yvar_val]
             dfednow.drop(columns=[ov_xvar, ov_yvar], inplace=True)
-            dfednow.loc[dfednow['True_Prevalence_elim'] == False,
-                        'True_Prevalence_elim_day'] = np.nan
+            # dfednow = dfednow[dfednow['True_Prevalence_elim'] == True]
             dfednow.drop(columns=['True_Prevalence_elim'], inplace=True)
             dfednownow = (dfednow.groupby([mat_xvar, mat_yvar])['True_Prevalence_elim_day'].mean()).reset_index()
             matnow = dfednownow.pivot_table(index=[mat_yvar], columns=[mat_xvar],
                                             values='True_Prevalence_elim_day', dropna=False)
             # matnow = matnow.round(1)  # .astype('Int64')
-            matnow = (matnow / 365).round(1)  # .astype('Int64')
+            matnow = (matnow/365).round(1)  # .astype('Int64')
             # z_text = [[str(y) for y in x] for x in matnow.values]
 
             # - Create annotated heatmap
@@ -677,8 +676,8 @@ def update_elim_day_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
                 x=matnow.columns.tolist(),
                 y=matnow.index.tolist(),
                 # annotation_text=z_text,
-                zmax=(dfed['True_Prevalence_elim_day'] / 365).max(),
-                zmin=(dfed['True_Prevalence_elim_day'] / 365).min(),
+                zmax=(dfed['True_Prevalence_elim_day']/365).max(),
+                zmin=(dfed['True_Prevalence_elim_day']/365).min(),
                 showscale=True,
                 colorscale='YlOrBr')
             )
