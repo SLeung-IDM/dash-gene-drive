@@ -106,9 +106,9 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 # data_dir = 'Y:\\home\\sleung\\workitems\\789\\292\\b25\\789292b2-5505-ec11-a9ed-b88303911bc1'
 
 # -- spatial, classic, VC and GM, EIR = 30
-# wi_name = 'spatialinside_classic3allele_VC_and_GM_aEIR30_sweep_rc_d_rr0_sne'
-# wi_name_sh = 'spatial, classic drive, VC and GM, EIR = 30'
-# data_dir = 'Y:\\home\\sleung\\workitems\\a82\\f7d\\335\\a82f7d33-5705-ec11-a9ed-b88303911bc1'
+wi_name = 'spatialinside_classic3allele_VC_and_GM_aEIR30_sweep_rc_d_rr0_sne'
+wi_name_sh = 'spatial, classic drive, VC and GM, EIR = 30'
+data_dir = 'Y:\\home\\sleung\\workitems\\a82\\f7d\\335\\a82f7d33-5705-ec11-a9ed-b88303911bc1'
 
 # -- spatial, integral, GM only, EIR = 30
 # wi_name = 'spatialinside_integral2l4a_GM_only_aEIR30_sweep_rc_d1_rr20_se2'
@@ -116,9 +116,9 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 # data_dir = 'Z:\\home\\sleung\\workitems\\bf3\\d9c\\256\\bf3d9c25-6b04-ec11-a9ed-b88303911bc1'
 
 # -- spatial, classic, GM only, EIR = 30
-wi_name = 'spatialinside_classic3allele_GM_only_aEIR30_sweep_rc_d_rr0_sne_release_day_release_node_num'
-wi_name_sh = 'spatial, classic drive, GM only, EIR = 30'
-data_dir = 'Z:\\home\\sleung\\workitems\\648\\d61\\287\\648d6128-78f9-eb11-a9ed-b88303911bc1'
+# wi_name = 'spatialinside_classic3allele_GM_only_aEIR30_sweep_rc_d_rr0_sne_release_day_release_node_num'
+# wi_name_sh = 'spatial, classic drive, GM only, EIR = 30'
+# data_dir = 'Z:\\home\\sleung\\workitems\\648\\d61\\287\\648d6128-78f9-eb11-a9ed-b88303911bc1'
 
 # -- spatial, integral, VC and GM, EIR = 10
 # wi_name = 'spatialinside_integral2l4a_VC_and_GM_aEIR10_sweep_rc_d1_rr20_se2'
@@ -140,8 +140,8 @@ data_dir = 'Z:\\home\\sleung\\workitems\\648\\d61\\287\\648d6128-78f9-eb11-a9ed-
 # wi_name_sh = 'spatial, classic drive, GM only, EIR = 10'
 # data_dir = 'Z:\\home\\sleung\\workitems\\d2b\\2a2\\f47\\d2b2a2f4-77f9-eb11-a9ed-b88303911bc1'
 
-num_sweep_vars = 6  # choose 4, 6
-num_partition_vars = 3  # choose 0, 1, 3, 4
+num_sweep_vars = 4  # choose 4, 6
+num_partition_vars = 0  # choose 0, 1, 3, 4
 drive_type = 'classic'  # choose integral, classic
 
 distrib_itns = True
@@ -200,12 +200,12 @@ elif num_sweep_vars == 4:
         #     'sne': [0.25, 0.3, 0.35, 0.4, 0.45, 0.5]}
         # OLD
         allvardefs = {'rc': 1, 'd': 1, 'sne': 0,
-                      # 'rr0': 0}
-                      'rr0': 0.01}  # NEW RR0
+                      'rr0': 0}
+                      # 'rr0': 0.01}  # NEW RR0
         allvarvals = {'rc': [1, 0.9, 0.8, 0.7, 0.6, 0.5],
                       'd': [1, 0.95, 0.9],
-                      # 'rr0': [0, 0.1, 0.2],
-                      'rr0': [0.001, 0.01],  # NEW RR0
+                      'rr0': [0, 0.1, 0.2],
+                      # 'rr0': [0.001, 0.01],  # NEW RR0
                       'sne': [0, 0.05, 0.1, 0.15, 0.2]}
         allvarvals_fns = {'rc': [1, 0.9, 0.8, 0.7, 0.6, 0.5],
                           'd': [1, 0.95, 0.9],
@@ -304,14 +304,6 @@ else:
     dfed = pd.read_csv(os.path.join(data_dir, wi_name + '_inset_data_elim_day_number_indiv_sims.csv'))
 
 # - Clean up data
-if 'Unnamed: 0' in dfi.columns:
-    dfi = dfi.drop('Unnamed: 0', axis=1)
-# if 'Unnamed: 0' in dfa.columns:
-#     dfa = dfa.drop('Unnamed: 0', axis=1)
-if 'Unnamed: 0' in dfe.columns:
-    dfe = dfe.drop('Unnamed: 0', axis=1)
-if 'Unnamed: 0' in dfed.columns:
-    dfed = dfed.drop('Unnamed: 0', axis=1)
 # dfa.rename(columns={'Time': 'time'}, inplace=True)
 dfe.rename(columns={'Time': 'time'}, inplace=True)
 dfed.rename(columns={'Time': 'time'}, inplace=True)
