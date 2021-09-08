@@ -1,0 +1,41 @@
+| Name                      | Version   | License                                                                                             |
+|---------------------------|-----------|-----------------------------------------------------------------------------------------------------|
+| Brotli                    | 1.0.9     | MIT License                                                                                         |
+| Flask                     | 2.0.1     | BSD License                                                                                         |
+| Flask-Compress            | 1.10.1    | MIT License                                                                                         |
+| Jinja2                    | 3.0.1     | BSD License                                                                                         |
+| MarkupSafe                | 2.0.1     | BSD License                                                                                         |
+| Werkzeug                  | 2.0.1     | BSD License                                                                                         |
+| arrow                     | 1.1.1     | Apache Software License                                                                             |
+| binaryornot               | 0.4.4     | BSD License                                                                                         |
+| certifi                   | 2021.5.30 | Mozilla Public License 2.0 (MPL 2.0)                                                                |
+| chardet                   | 4.0.0     | GNU Library or Lesser General Public License (LGPL)                                                 |
+| charset-normalizer        | 2.0.4     | MIT License                                                                                         |
+| click                     | 8.0.1     | BSD License                                                                                         |
+| colorama                  | 0.4.4     | BSD License                                                                                         |
+| cookiecutter              | 1.7.3     | BSD License                                                                                         |
+| dash                      | 2.0.0rc2  | MIT License                                                                                         |
+| dash-bootstrap-components | 0.13.0    | Apache Software License                                                                             |
+| dash-core-components      | 2.0.0rc1  | MIT                                                                                                 |
+| dash-html-components      | 2.0.0rc1  | MIT                                                                                                 |
+| dash-renderer             | 1.9.1     | MIT                                                                                                 |
+| dash-table                | 5.0.0rc1  | MIT                                                                                                 |
+| future                    | 0.18.2    | MIT License                                                                                         |
+| idna                      | 3.2       | BSD License                                                                                         |
+| itsdangerous              | 2.0.1     | BSD License                                                                                         |
+| jinja2-time               | 0.2.0     | MIT License                                                                                         |
+| numpy                     | 1.21.2    | BSD License                                                                                         |
+| pandas                    | 1.3.2     | BSD License                                                                                         |
+| pep517                    | 0.11.0    | MIT License                                                                                         |
+| pip-tools                 | 6.2.0     | BSD License                                                                                         |
+| plotly                    | 5.2.2     | MIT                                                                                                 |
+| poyo                      | 0.5.0     | MIT License                                                                                         |
+| python-dateutil           | 2.8.2     | Apache Software License; BSD License                                                                |
+| python-slugify            | 5.0.2     | MIT License                                                                                         |
+| pytz                      | 2021.1    | MIT License                                                                                         |
+| requests                  | 2.26.0    | Apache Software License                                                                             |
+| six                       | 1.16.0    | MIT License                                                                                         |
+| tenacity                  | 8.0.1     | Apache Software License                                                                             |
+| text-unidecode            | 1.3       | Artistic License; GNU General Public License (GPL); GNU General Public License v2 or later (GPLv2+) |
+| tomli                     | 1.2.1     | MIT License                                                                                         |
+| urllib3                   | 1.26.6    | MIT License                                                                                         |

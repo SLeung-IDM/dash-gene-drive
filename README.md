@@ -10,6 +10,9 @@ pip install -r requirements.txt
 as `requirements.in`. If you want to add new packages you can update `requirements.in` with the new package's name,
 run `pip-compile` then finally run `pip install -r requirements.txt`.
 
+#### Data
+Inside the `Gene_Drive` directory we need a `csvs` directory to hold the csvs needed. 
+
 #### Run app.py 
 From the Gene_Drive directory  run
 ```
