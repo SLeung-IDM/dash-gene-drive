@@ -1,5 +1,5 @@
 pip-tools
-dash
+dash==2.0.0rc2
 dash-renderer
 dash-html-components
 dash-core-components

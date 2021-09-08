@@ -8,5 +8,5 @@ header = dbc.NavbarSimple(
     brand="Gene_Drive",
     brand_href="/",
     color="#24323c",
-    dark=True
+    dark=True,
 )
