@@ -4,6 +4,7 @@ about_style = {
     "minWidth": '48rem',
     "width": '70%',
     "margin": '0 auto',
+    "minHeight": "85vh"
 }
 title_style = {
     "margin": '20px 20px 10px 0px',
