@@ -24,3 +24,12 @@ Install the latest version of py charm (2021.2.1 RC or latest).
 #### Manually updating licenses file
 If you install additional third party packages, the licenses file should reflect the change. From the directory
 where `LICENSES.txt` is run `pip-licenses --format=markdown --output-file=LICENSES.txt`
+
+
+#### Staging
+```
+pip install gunicorn
+cd Gene_Drive
+gunicorn app:server -b 0.0.0.0:8050
+
+```
