@@ -21,6 +21,8 @@ app = dash.Dash(__name__,
                 external_scripts=external_scripts,
                 suppress_callback_exceptions=True)
 
+server = app.server
+
 # A function to wrap a component with header and footer
 def layout(component=None):
     return html.Div(children=[
