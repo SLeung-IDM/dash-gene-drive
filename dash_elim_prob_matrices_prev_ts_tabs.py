@@ -68,7 +68,7 @@ if num_sweep_vars == 6:
                       # 'rd': [180, 240, 300, 360, 420, 480, 545],
                       'rd': [180],
                       'nn': [6]}
-                      # 'nn': [6, 12]}
+        # 'nn': [6, 12]}
 elif num_sweep_vars == 4:
     if drive_type == 'classic':
         allvardefs = {'rc': 1, 'd': 1, 'sne': 0, 'rr0': 0}
@@ -276,10 +276,13 @@ def update_elim_prob_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
             # - Create annotated heatmap
             subplots.append(ff.create_annotated_heatmap(
                 z=matnow.values,
+                x=[str(i) for i in matnow.columns.tolist()],
+                y=[str(i) for i in matnow.index.tolist()],
+                # z_text=np.around(matnow.values, decimals=1),
                 # x=matnow.columns.tolist(),
-                x=list(range(0, len(allvarvals[mat_xvar]))),
+                # x=list(range(0, len(allvarvals[mat_xvar]))),
                 # y=matnow.index.tolist(),
-                y=np.arange(0, len(allvarvals[mat_yvar])),
+                # y=np.arange(0, len(allvarvals[mat_yvar])),
                 zmax=1,
                 zmin=0,
                 # coloraxis='coloraxis',
