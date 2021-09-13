@@ -37,7 +37,8 @@ drive_type = 'classic'
 # drive_type = 'integral'
 
 # -- 4.) Spatial, classic, GM only, EIR = 30
-# wi_name = 'spatialinside_classic3allele_GM_only_aEIR30_sweep_rc_d_rr0_sne_release_day_release_node_num'
+# NOTE THAT THIS WORK ITEM/EXP DOESN'T HAVE ALLELE FREQS
+# wi_name = 'spatialinside_classic3allele_GM_only_aEIR30_sweep_rc_d_rr0_sne'
 # wi_name_sh = 'spatial, classic drive, GM only, EIR = 30'
 # distrib_itns = False
 # num_sweep_vars = 6
@@ -62,27 +63,25 @@ if num_sweep_vars == 6:
                       'rd': 180, 'nn': 6}
         allvarvals = {'rc': [1, 0.9, 0.8, 0.7, 0.6, 0.5],
                       'd': [1, 0.95, 0.9],
-                      'rr0': [0, 0.1, 0.2],
-                      'sne': [0, 0.05, 0.1, 0.15, 0.2],
-                      'rd': [180, 240, 300, 360, 420, 480, 545],
-                      'nn': [6, 12]}
+                      'rr0': [0, 0.001, 0.01, 0.1],
+                      'sne': [0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5],
+                      # 'rd': [180, 240, 300, 360, 420, 480, 545],
+                      'rd': [180],
+                      'nn': [6]}
+                      # 'nn': [6, 12]}
 elif num_sweep_vars == 4:
     if drive_type == 'classic':
         allvardefs = {'rc': 1, 'd': 1, 'sne': 0, 'rr0': 0}
         allvarvals = {'rc': [1, 0.9, 0.8, 0.7, 0.6, 0.5],
                       'd': [1, 0.95, 0.9],
-                      'rr0': [0, 0.1, 0.2],
-                      'sne': [0, 0.05, 0.1, 0.15, 0.2]}
-        allvarvals_fns = {'rc': [1, 0.9, 0.8, 0.7, 0.6, 0.5],
-                          'd': [1, 0.95, 0.9],
-                          'rr0': [0, 0.1, 0.2],
-                          'sne': [0, 0.05, 0.1, 0.15, 0.2]}
+                      'rr0': [0, 0.001, 0.01, 0.1],
+                      'sne': [0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5]}
     elif drive_type == 'integral':
         allvardefs = {'rc': 1, 'd1': 1, 'se2': 0, 'rr20': 0}
         allvarvals = {'rc': [1, 0.9, 0.8, 0.7, 0.6, 0.5],
                       'd1': [1, 0.95, 0.9],
-                      'rr20': [0, 0.1, 0.2],
-                      'se2': [0, 0.05, 0.1, 0.15, 0.2]}
+                      'rr20': [0, 0.001, 0.01, 0.1],
+                      'se2': [0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5]}
 
 ##
 # -------- Load data
@@ -277,8 +276,10 @@ def update_elim_prob_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
             # - Create annotated heatmap
             subplots.append(ff.create_annotated_heatmap(
                 z=matnow.values,
-                x=matnow.columns.tolist(),
-                y=matnow.index.tolist(),
+                # x=matnow.columns.tolist(),
+                x=list(range(0, len(allvarvals[mat_xvar]))),
+                # y=matnow.index.tolist(),
+                y=np.arange(0, len(allvarvals[mat_yvar])),
                 zmax=1,
                 zmin=0,
                 # coloraxis='coloraxis',
@@ -325,12 +326,15 @@ def update_elim_prob_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
     # - Update fig layout and subplot axes
     fig.update_xaxes(
         tickmode='array',
-        tickvals=allvarvals[mat_xvar],
+        # tickvals=allvarvals[mat_xvar],
+        tickvals=list(range(0, len(allvarvals[mat_xvar]))),
         ticktext=[str(val) for val in allvarvals[mat_xvar]]
     )
     fig.update_yaxes(
         tickmode='array',
-        tickvals=allvarvals[mat_yvar],
+        # tickvals=allvarvals[mat_yvar],
+        tickvals=np.arange(0, len(allvarvals[mat_yvar])),
+        # tickvals=list(range(0, len(allvarvals[mat_yvar]))),
         ticktext=[str(val) for val in allvarvals[mat_yvar]]
     )
     # fig.update_coloraxes(colorscale='Viridis')
@@ -460,4 +464,4 @@ def update_prev_ts(ov_xvar, ov_yvar, svar0, svar1):
 
 ##
 if __name__ == '__main__':
-    app.run_server(debug=False, port=8080)
+    app.run_server(debug=True, port=8080)
