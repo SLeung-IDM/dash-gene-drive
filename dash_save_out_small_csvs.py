@@ -30,28 +30,29 @@ import pandas as pd
 # drive_type = 'classic'
 
 # -- spatial, integral, GM only, EIR = 30
-# wi_name = 'spatialinside_integral2l4a_GM_only_aEIR30_sweep_rc_d1_rr20_se2'
-# wi_name_sh = 'spatial, integral drive, GM only, EIR = 30'
-# wi_names = ['spatialinside_integral2l4a_GM_only_aEIR30_sweep_rc_d1_rr20_se2',
-#             'spatialinside_integral2l4a_GM_only_aEIR30_sweep_rc_d1_rr20_se2_newrr20',
-#             'spatialinside_integral2l4a_GM_only_aEIR30_sweep_rc_d1_rr20_se2_newse2']
-# data_dirs = ['Z:\\home\\sleung\\workitems\\bf3\\d9c\\256\\bf3d9c25-6b04-ec11-a9ed-b88303911bc1',
-#              'Y:\\home\\sleung\\workitems\\0dd\\3ce\\329\\0dd3ce32-960b-ec11-a9ed-b88303911bc1',
-#              'Y:\\home\\sleung\\workitems\\63f\\310\\9f7\\63f3109f-7312-ec11-a9ed-b88303911bc1']
-# num_sweep_vars = 4
-# drive_type = 'integral'
+wi_name = 'spatialinside_integral2l4a_GM_only_aEIR30_sweep_rc_d1_rr20_se2'
+wi_name_sh = 'spatial, integral drive, GM only, EIR = 30'
+wi_names = ['spatialinside_integral2l4a_GM_only_aEIR30_sweep_rc_d1_rr20_se2',
+            'spatialinside_integral2l4a_GM_only_aEIR30_sweep_rc_d1_rr20_se2_newrr20',
+            'spatialinside_integral2l4a_GM_only_aEIR30_sweep_rc_d1_rr20_se2_newse2']
+data_dirs = ['Z:\\home\\sleung\\workitems\\bf3\\d9c\\256\\bf3d9c25-6b04-ec11-a9ed-b88303911bc1',
+             'Y:\\home\\sleung\\workitems\\0dd\\3ce\\329\\0dd3ce32-960b-ec11-a9ed-b88303911bc1',
+             'Y:\\home\\sleung\\workitems\\63f\\310\\9f7\\63f3109f-7312-ec11-a9ed-b88303911bc1']
+num_sweep_vars = 4
+drive_type = 'integral'
 
 # -- spatial, classic, GM only, EIR = 30
-wi_name = 'spatialinside_classic3allele_GM_only_aEIR30_sweep_rc_d_rr0_sne'
-wi_name_sh = 'spatial, classic drive, GM only, EIR = 30'
-wi_names = ['spatialinside_classic3allele_GM_only_aEIR30_sweep_rc_d_rr0_sne_release_day_release_node_num',
-            'spatialinside_classic3allele_GM_only_aEIR30_sweep_rc_d_rr0_sne_newrr0',
-            'spatialinside_classic3allele_GM_only_aEIR30_sweep_rc_d_rr0_sne_newsne']
-data_dirs = ['Z:\\home\\sleung\\workitems\\648\\d61\\287\\648d6128-78f9-eb11-a9ed-b88303911bc1',
-             'Y:\\home\\sleung\\workitems\\89d\\46b\\9f9\\89d46b9f-950b-ec11-a9ed-b88303911bc1',
-             'Y:\\home\\sleung\\workitems\\279\\e5f\\038\\279e5f03-8b12-ec11-a9ed-b88303911bc1']
-num_sweep_vars = 6
-drive_type = 'classic'
+# NOTE THAT THIS WORK ITEM/EXP DOESN'T HAVE ALLELE FREQS
+# wi_name = 'spatialinside_classic3allele_GM_only_aEIR30_sweep_rc_d_rr0_sne'
+# wi_name_sh = 'spatial, classic drive, GM only, EIR = 30'
+# wi_names = ['spatialinside_classic3allele_GM_only_aEIR30_sweep_rc_d_rr0_sne_release_day_release_node_num',
+#             'spatialinside_classic3allele_GM_only_aEIR30_sweep_rc_d_rr0_sne_newrr0',
+#             'spatialinside_classic3allele_GM_only_aEIR30_sweep_rc_d_rr0_sne_newsne']
+# data_dirs = ['Z:\\home\\sleung\\workitems\\648\\d61\\287\\648d6128-78f9-eb11-a9ed-b88303911bc1',
+#              'Y:\\home\\sleung\\workitems\\89d\\46b\\9f9\\89d46b9f-950b-ec11-a9ed-b88303911bc1',
+#              'Y:\\home\\sleung\\workitems\\279\\e5f\\038\\279e5f03-8b12-ec11-a9ed-b88303911bc1']
+# num_sweep_vars = 6
+# drive_type = 'classic'
 
 elim_day = 2555  # day on which elim fraction is calculated
 
