@@ -57,12 +57,13 @@ num_yrs = 8  # length of sim
 elim_day = 2555  # day on which elim fraction is calculated
 num_seeds = 20  # num of seeds per sim
 
+# NOTE: all value arrays must be sorted increasing
 if num_sweep_vars == 6:
     if drive_type == 'classic':
         allvardefs = {'rc': 1, 'd': 1, 'rr0': 0, 'sne': 0,
                       'rd': 180, 'nn': 6}
-        allvarvals = {'rc': [1, 0.9, 0.8, 0.7, 0.6, 0.5],
-                      'd': [1, 0.95, 0.9],
+        allvarvals = {'rc': [0.5, 0.6, 0.7, 0.8, 0.9, 1],
+                      'd': [0.9, 0.95, 1],
                       'rr0': [0, 0.001, 0.01, 0.1],
                       'sne': [0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5],
                       # 'rd': [180, 240, 300, 360, 420, 480, 545],
@@ -72,14 +73,15 @@ if num_sweep_vars == 6:
 elif num_sweep_vars == 4:
     if drive_type == 'classic':
         allvardefs = {'rc': 1, 'd': 1, 'sne': 0, 'rr0': 0}
-        allvarvals = {'rc': [1, 0.9, 0.8, 0.7, 0.6, 0.5],
-                      'd': [1, 0.95, 0.9],
+        allvarvals = {'rc': [0.5, 0.6, 0.7, 0.8, 0.9, 1],
+                      'd': [0.9, 0.95, 1],
                       'rr0': [0, 0.001, 0.01, 0.1],
-                      'sne': [0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5]}
+                      'sne': [0, 0.1, 0.2, 0.3, 0.4, 0.5]}
+                      # 'sne': [0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5]}
     elif drive_type == 'integral':
         allvardefs = {'rc': 1, 'd1': 1, 'se2': 0, 'rr20': 0}
-        allvarvals = {'rc': [1, 0.9, 0.8, 0.7, 0.6, 0.5],
-                      'd1': [1, 0.95, 0.9],
+        allvarvals = {'rc': [0.5, 0.6, 0.7, 0.8, 0.9, 1],
+                      'd1': [0.9, 0.95, 1],
                       'rr20': [0, 0.001, 0.01, 0.1],
                       'se2': [0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5]}
 
@@ -256,17 +258,21 @@ def update_elim_prob_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
     # - Compute subplot titles and heatmaps
     iaxis = 1
     subplots = []
-    subplot_titles = []
+
+    dfesm = dfe[dfe[mat_xvar].isin(allvarvals[mat_xvar]) &
+                dfe[mat_yvar].isin(allvarvals[mat_yvar])]
 
     for ov_yvar_val in ov_yvar_vals:
         for ov_xvar_val in ov_xvar_vals:
 
-            # - Compute heatmap
+            # - Compute heatmap values
             allvardefsnow = {k: v for k, v in allvardefs.items() if k not in [mat_xvar, mat_yvar, ov_xvar, ov_yvar]}
-            dfenow = dfe
-            for k, v in allvardefsnow.items():
-                dfenow = dfenow[dfenow[k] == v]
-                dfenow.drop(columns=[k], inplace=True)
+            if len(allvardefsnow) == 0:
+                dfenow = dfesm
+            else:
+                for k, v in allvardefsnow.items():
+                    dfenow = dfesm[dfesm[k] == v]
+                    dfenow.drop(columns=[k], inplace=True)
             dfenow = dfenow[dfenow[ov_xvar] == ov_xvar_val]
             dfenow = dfenow[dfenow[ov_yvar] == ov_yvar_val]
             dfenow.drop(columns=[ov_xvar, ov_yvar], inplace=True)
@@ -276,17 +282,10 @@ def update_elim_prob_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
             # - Create annotated heatmap
             subplots.append(ff.create_annotated_heatmap(
                 z=matnow.values,
-                x=[str(i) for i in matnow.columns.tolist()],
-                y=[str(i) for i in matnow.index.tolist()],
-                # z_text=np.around(matnow.values, decimals=1),
-                # x=matnow.columns.tolist(),
-                # x=list(range(0, len(allvarvals[mat_xvar]))),
-                # y=matnow.index.tolist(),
-                # y=np.arange(0, len(allvarvals[mat_yvar])),
-                zmax=1,
+                x=list(range(len(allvarvals[mat_xvar]))),
+                y=list(range(len(allvarvals[mat_yvar]))),
                 zmin=0,
-                # coloraxis='coloraxis',
-                # hovertemplate=mat_xvar + ': %{x}<br>' + mat_yvar + ': %{y}<br>Elim prob: %{z}<extra></extra>',
+                zmax=1,
                 showscale=True,
                 colorscale='YlOrBr_r')
             )
@@ -297,14 +296,9 @@ def update_elim_prob_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
                 annot['yref'] = 'y' + str(iaxis)
             iaxis = iaxis + 1
 
-            # - Create subplot titles
-            # subplot_titles.append(ov_xvar + '=' + str(ov_xvar_val) + ', '
-            #                      + ov_yvar + '=' + str(ov_yvar_val))
-
     # - Set up subplot framework and titles
     fig = make_subplots(
         rows=len(ov_yvar_vals), cols=len(ov_xvar_vals),
-        # subplot_titles=subplot_titles,
         shared_xaxes=True,
         shared_yaxes=True,
         column_titles=[ov_xvar + '=' + str(val) for val in ov_xvar_vals],
@@ -329,22 +323,15 @@ def update_elim_prob_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
     # - Update fig layout and subplot axes
     fig.update_xaxes(
         tickmode='array',
-        # tickvals=allvarvals[mat_xvar],
-        tickvals=list(range(0, len(allvarvals[mat_xvar]))),
+        tickvals=list(range(len(allvarvals[mat_xvar]))),
         ticktext=[str(val) for val in allvarvals[mat_xvar]]
     )
     fig.update_yaxes(
         tickmode='array',
-        # tickvals=allvarvals[mat_yvar],
-        tickvals=np.arange(0, len(allvarvals[mat_yvar])),
-        # tickvals=list(range(0, len(allvarvals[mat_yvar]))),
+        tickvals=list(range(len(allvarvals[mat_yvar]))),
         ticktext=[str(val) for val in allvarvals[mat_yvar]]
     )
-    # fig.update_coloraxes(colorscale='Viridis')
     fig.update_layout(margin=dict(l=60, r=50, b=50, t=30))
-    #                   coloraxis={'colorscale': 'YlOrBr_r'},
-    #                   title='Elim probabilities, ' + wi_name,
-    #                   transition_duration=500)
 
     return fig
 
@@ -364,15 +351,20 @@ def update_elim_day_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
     iaxis = 1
     subplots = []
 
+    dfedsm = dfed[dfed[mat_xvar].isin(allvarvals[mat_xvar]) &
+                  dfed[mat_yvar].isin(allvarvals[mat_yvar])]
+
     for ov_yvar_val in ov_yvar_vals:
         for ov_xvar_val in ov_xvar_vals:
 
-            # - Compute heatmap
+            # - Compute heatmap values
             allvardefsnow = {k: v for k, v in allvardefs.items() if k not in [mat_xvar, mat_yvar, ov_xvar, ov_yvar]}
-            dfednow = dfed
-            for k, v in allvardefsnow.items():
-                dfednow = dfednow[dfednow[k] == v]
-                dfednow.drop(columns=[k], inplace=True)
+            if len(allvardefsnow) == 0:
+                dfednow = dfedsm
+            else:
+                for k, v in allvardefsnow.items():
+                    dfednow = dfedsm[dfedsm[k] == v]
+                    dfednow.drop(columns=[k], inplace=True)
             dfednow = dfednow[dfednow[ov_xvar] == ov_xvar_val]
             dfednow = dfednow[dfednow[ov_yvar] == ov_yvar_val]
             dfednow.drop(columns=[ov_xvar, ov_yvar], inplace=True)
@@ -382,18 +374,15 @@ def update_elim_day_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
             dfednownow = (dfednow.groupby([mat_xvar, mat_yvar])['True_Prevalence_elim_day'].mean()).reset_index()
             matnow = dfednownow.pivot_table(index=[mat_yvar], columns=[mat_xvar],
                                             values='True_Prevalence_elim_day', dropna=False)
-            # matnow = matnow.round(1)  # .astype('Int64')
             matnow = (matnow / 365).round(1)  # .astype('Int64')
-            # z_text = [[str(y) for y in x] for x in matnow.values]
 
             # - Create annotated heatmap
             subplots.append(ff.create_annotated_heatmap(
                 z=matnow.values,
-                x=matnow.columns.tolist(),
-                y=matnow.index.tolist(),
-                # annotation_text=z_text,
-                zmax=(dfed['True_Prevalence_elim_day'] / 365).max(),
+                x=list(range(len(allvarvals[mat_xvar]))),
+                y=list(range(len(allvarvals[mat_yvar]))),
                 zmin=(dfed['True_Prevalence_elim_day'] / 365).min(),
+                zmax=(dfed['True_Prevalence_elim_day'] / 365).max(),
                 showscale=True,
                 colorscale='YlOrBr')
             )
@@ -404,7 +393,7 @@ def update_elim_day_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
                 annot['yref'] = 'y' + str(iaxis)
             iaxis = iaxis + 1
 
-    # - Set up subplot framework and titles
+    # - Set up subplot framework
     fig = make_subplots(
         rows=len(ov_yvar_vals), cols=len(ov_xvar_vals),
         shared_xaxes=True,
@@ -424,7 +413,7 @@ def update_elim_day_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
             fig.add_trace(subplots[isp].data[0], row=irow + 1, col=icol + 1)
             isp = isp + 1
 
-    # - Update annotations for all subplot
+    # - Update annotations for all subplots
     for isp, subplot in enumerate(subplots):
         fig.layout.annotations += subplots[isp].layout.annotations
 
@@ -432,13 +421,13 @@ def update_elim_day_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
     fig.update_xaxes(
         ticklen=10,
         tickmode='array',
-        tickvals=allvarvals[mat_xvar],
+        tickvals=list(range(len(allvarvals[mat_xvar]))),
         ticktext=[str(val) for val in allvarvals[mat_xvar]]
     )
     fig.update_yaxes(
         ticklen=10,
         tickmode='array',
-        tickvals=allvarvals[mat_yvar],
+        tickvals=list(range(len(allvarvals[mat_yvar]))),
         ticktext=[str(val) for val in allvarvals[mat_yvar]]
     )
     fig.update_layout(margin=dict(l=60, r=50, b=50, t=30))
@@ -453,8 +442,11 @@ def update_elim_day_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
      Input('sweep-var2-0', 'value'),
      Input('sweep-var2-1', 'value')])
 def update_prev_ts(ov_xvar, ov_yvar, svar0, svar1):
+    dfism = dfi[dfi[svar0].isin(allvarvals[svar0]) &
+                dfi[svar1].isin(allvarvals[svar1])]
+
     allvardefsnow = {k: v for k, v in allvardefs.items() if k not in [svar0, svar1, ov_xvar, ov_yvar]}
-    dfinow = dfi
+    dfinow = dfism
     for k, v in allvardefsnow.items():
         dfinow = dfinow[dfinow[k] == v]
         dfinow.drop(columns=[k], inplace=True)
