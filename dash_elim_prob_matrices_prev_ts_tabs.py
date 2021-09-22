@@ -23,12 +23,12 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 # drive_type = 'integral'
 
 # -- 2.) Spatial, classic, VC and GM, EIR = 30
-wi_name = 'spatialinside_classic3allele_VC_and_GM_aEIR30_sweep_rc_d_rr0_sne'
-wi_name_sh = 'spatial, classic drive, VC and GM, EIR = 30'
-distrib_itns = True
-num_sweep_vars = 4
-drive_type = 'classic'
-effector_allele = 'a1'
+# wi_name = 'spatialinside_classic3allele_VC_and_GM_aEIR30_sweep_rc_d_rr0_sne'
+# wi_name_sh = 'spatial, classic drive, VC and GM, EIR = 30'
+# distrib_itns = True
+# num_sweep_vars = 4
+# drive_type = 'classic'
+# effector_allele = 'a1'
 
 # -- 3.) Spatial, integral, GM only, EIR = 30
 # wi_name = 'spatialinside_integral2l4a_GM_only_aEIR30_sweep_rc_d1_rr20_se2'
@@ -38,12 +38,12 @@ effector_allele = 'a1'
 # drive_type = 'integral'
 
 # -- 4.) Spatial, classic, GM only, EIR = 30
-# NOTE THAT THIS WORK ITEM/EXP DOESN'T HAVE ALLELE FREQS
-# wi_name = 'spatialinside_classic3allele_GM_only_aEIR30_sweep_rc_d_rr0_sne'
-# wi_name_sh = 'spatial, classic drive, GM only, EIR = 30'
-# distrib_itns = False
-# num_sweep_vars = 6
-# drive_type = 'classic'
+wi_name = 'spatialinside_classic3allele_GM_only_aEIR30_sweep_rc_d_rr0_sne'
+wi_name_sh = 'spatial, classic drive, GM only, EIR = 30'
+distrib_itns = False
+num_sweep_vars = 4  # 6
+drive_type = 'classic'
+effector_allele = 'a1'
 
 data_dir = 'csvs'
 
