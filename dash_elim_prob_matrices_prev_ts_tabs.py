@@ -342,8 +342,8 @@ def set_sv_value(outer_xvar_opts, outer_yvar_opts, matrix_xvar_opts, matrix_yvar
 @app.callback(
     [Output('outer-xvar2', 'options'),
      Output('outer-yvar2', 'options'),
-     Output('sweep-var-2-0', 'options'),
-     Output('sweep-var-2-1', 'options')],
+     Output('sweep-var2-0', 'options'),
+     Output('sweep-var2-1', 'options')],
     [Input('drive-type2', 'value')])
 def set_sv_options(sel_drive_type):
     outer_xvar_opts = svs_by_drive_type[sel_drive_type]
@@ -359,15 +359,15 @@ def set_sv_options(sel_drive_type):
 @app.callback(
     [Output('outer-xvar2', 'value'),
      Output('outer-yvar2', 'value'),
-     Output('sweep-var-2-0', 'value'),
-     Output('sweep-var-2-1', 'value')],
+     Output('sweep-var2-0', 'value'),
+     Output('sweep-var2-1', 'value')],
     [Input('outer-xvar2', 'options'),
      Input('outer-yvar2', 'options'),
-     Input('sweep-var-2-0', 'options'),
-     Input('sweep-var-2-1', 'options')])
+     Input('sweep-var2-0', 'options'),
+     Input('sweep-var2-1', 'options')])
 def set_sv_value(outer_xvar_opts, outer_yvar_opts, matrix_xvar_opts, matrix_yvar_opts):
-    return outer_xvar_opts[0]['value'], outer_yvar_opts[1]['value'], \
-           matrix_xvar_opts[2]['value'], matrix_yvar_opts[3]['value']
+    return outer_xvar_opts[0]['value'], outer_yvar_opts[2]['value'], \
+           matrix_xvar_opts[3]['value'], matrix_yvar_opts[1]['value']
 
 
 # ---------------------------------------------
@@ -614,20 +614,25 @@ def update_prev_ts(sel_eir_itn, sel_drive_type,
     # - Plot
     fig = px.line(dfinow, x='Time', y='PfHRP2 Prevalence',
                   labels={
-                      'PfHRP2 Prevalence': ''
+                      'PfHRP2 Prevalence': '',
+                      'Time': 'Day',
                   },
                   color=svar0, line_dash=svar1,
                   facet_col=ov_xvar, facet_row=ov_yvar)
     fig.add_vline(x=released_day, line_dash="dash", line_color="black",
-                  row="all", col="all",
-                  annotation_text="Vector release",
-                  annotation_position="bottom right")
+                  row="all", col="all")
+    fig.add_vline(x=released_day, line_dash="dash", line_color="black",
+                  row=0, col=len(ov_xvar)-1, annotation_text="Vector <br>release",
+                  annotation_position="top right", annotation_font_color="black")
     if 'with ITN' in sel_eir_itn:
+        fig.add_vline(x=itn_distrib_days[1], line_dash="dot", line_color="yellow",
+                      row=0, col=len(ov_xvar)-1, annotation_text="ITN <br>distribs",
+                      annotation_position="top right", annotation_font_color="yellow")
         for distrib_day in itn_distrib_days:
-            fig.add_vline(x=distrib_day, line_dash="dot", line_color="green",
-                          row="all", col="all",
-                          annotation_text="ITN distrib",
-                          annotation_position="bottom right")
+            fig.add_vline(x=distrib_day, line_dash="dot", line_color="yellow",
+                          row="all", col="all")
+    fig.update_xaxes(range=[0, num_yrs*365])
+    fig.update_yaxes(range=[0, 0.7])
     return fig
 
 
