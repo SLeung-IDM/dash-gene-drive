@@ -44,6 +44,19 @@ sv_defs_by_drive_type = {
     }
 }
 
+alleles_by_drive_type = {
+    'Classic': {
+        'wt_alelle': 'a0',
+        'effector_alelle': 'a1',
+        'resistance_alelle': 'a2'
+    },
+    'Integral': {
+        'wt_alelle': 'b0',
+        'effector_alelle': 'b1',
+        'resistance_alelle': 'b2'
+    }
+}
+
 eirs_itns = [
     'EIR = 10, no ITNs',
     'EIR = 10, with ITNs',
@@ -80,7 +93,7 @@ data_dir = 'csvs'
 ##
 # -------- Load data
 dfis = {}
-# dfas = {}
+dfas = {}
 dfes = {}
 dfeds = {}
 for drive_typenow in fns_by_drive_type_eir_itn.keys():
@@ -88,7 +101,7 @@ for drive_typenow in fns_by_drive_type_eir_itn.keys():
         winame = fns_by_drive_type_eir_itn[drive_typenow][eir_itnnow]
         dfis[winame] = pd.read_csv(os.path.join(data_dir, 'dfi_' + winame + '.csv'))
         dfis[winame]['Infectious Vectors Num'] = dfis[winame]['Adult Vectors'] * dfis[winame]['Infectious Vectors']
-        # dfas[winame] = pd.read_csv(os.path.join(data_dir, 'dfa_' + winame + '.csv'))
+        dfas[winame] = pd.read_csv(os.path.join(data_dir, 'dfa_' + winame + '.csv'))
         dfes[winame] = pd.read_csv(os.path.join(data_dir, 'dfe_' + winame + '.csv'))
         dfeds[winame] = pd.read_csv(os.path.join(data_dir, 'dfed_' + winame + '.csv'))
 
@@ -266,7 +279,7 @@ app.layout = html.Div([
             ])
         ]),
 
-        dcc.Tab(label='Adult vector time series', children=[
+        dcc.Tab(label='Adult vectors time series', children=[
 
             html.H2(children='Adult vectors'),
 
@@ -321,6 +334,175 @@ app.layout = html.Div([
                           style={'width': '100%', 'height': '80vh'})
             ])
         ]),
+
+        dcc.Tab(label='Infectious fraction time series', children=[
+
+            html.H2(children='Infectious vector fraction'),
+
+            html.Div(children=[
+
+                html.Div(children=[
+                    html.Label(['EIR and ITNs:'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    dcc.Dropdown(
+                        id='eir-itn4',
+                        options=[{'label': i, 'value': i} for i in list(eirs_itns)],
+                        value='EIR = 30, with ITNs'
+                    )
+                ], style={'width': '20%'}),
+
+                html.Div(children=[
+                    html.Label(['Drive type:'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    dcc.Dropdown(
+                        id='drive-type4',
+                        options=[{'label': i, 'value': i} for i in list(svs_by_drive_type.keys())],
+                        value='Integral'
+                    )
+                ], style={'width': '20%'})
+
+            ], style=dict(display='flex')),
+
+            html.Div(children=[
+
+                html.Div(children=[
+                    html.Label(['Outer x-var:'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    dcc.Dropdown(id='outer-xvar4')
+                ], style={'width': '10%'}),
+
+                html.Div(children=[
+                    html.Label(['Outer y-var:'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    dcc.Dropdown(id='outer-yvar4')
+                ], style={'width': '10%'}),
+
+                html.Div(children=[
+                    html.Label(['1st plot var (color):'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    dcc.Dropdown(id='sweep-var4-0')
+                ], style={'width': '10%'}),
+
+                html.Div(children=[
+                    html.Label(['2nd plot var (line style):'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    dcc.Dropdown(id='sweep-var4-1')
+                ], style={'width': '10%'}),
+
+            ], style=dict(display='flex')),
+
+            html.Div([
+                dcc.Graph(id='ivf-ts',
+                          style={'width': '100%', 'height': '80vh'})
+            ])
+        ]),
+
+        dcc.Tab(label='Infectious vectors time series', children=[
+
+            html.H2(children='Infectious vectors'),
+
+            html.Div(children=[
+
+                html.Div(children=[
+                    html.Label(['EIR and ITNs:'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    dcc.Dropdown(
+                        id='eir-itn5',
+                        options=[{'label': i, 'value': i} for i in list(eirs_itns)],
+                        value='EIR = 30, with ITNs'
+                    )
+                ], style={'width': '20%'}),
+
+                html.Div(children=[
+                    html.Label(['Drive type:'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    dcc.Dropdown(
+                        id='drive-type5',
+                        options=[{'label': i, 'value': i} for i in list(svs_by_drive_type.keys())],
+                        value='Integral'
+                    )
+                ], style={'width': '20%'})
+
+            ], style=dict(display='flex')),
+
+            html.Div(children=[
+
+                html.Div(children=[
+                    html.Label(['Outer x-var:'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    dcc.Dropdown(id='outer-xvar5')
+                ], style={'width': '10%'}),
+
+                html.Div(children=[
+                    html.Label(['Outer y-var:'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    dcc.Dropdown(id='outer-yvar5')
+                ], style={'width': '10%'}),
+
+                html.Div(children=[
+                    html.Label(['1st plot var (color):'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    dcc.Dropdown(id='sweep-var5-0')
+                ], style={'width': '10%'}),
+
+                html.Div(children=[
+                    html.Label(['2nd plot var (line style):'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    dcc.Dropdown(id='sweep-var5-1')
+                ], style={'width': '10%'}),
+
+            ], style=dict(display='flex')),
+
+            html.Div([
+                dcc.Graph(id='ivn-ts',
+                          style={'width': '100%', 'height': '80vh'})
+            ])
+        ]),
+
+        dcc.Tab(label='Effector frequency time series', children=[
+
+            html.H2(children='Effector frequency'),
+
+            html.Div(children=[
+
+                html.Div(children=[
+                    html.Label(['EIR and ITNs:'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    dcc.Dropdown(
+                        id='eir-itn6',
+                        options=[{'label': i, 'value': i} for i in list(eirs_itns)],
+                        value='EIR = 30, with ITNs'
+                    )
+                ], style={'width': '20%'}),
+
+                html.Div(children=[
+                    html.Label(['Drive type:'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    dcc.Dropdown(
+                        id='drive-type6',
+                        options=[{'label': i, 'value': i} for i in list(svs_by_drive_type.keys())],
+                        value='Integral'
+                    )
+                ], style={'width': '20%'})
+
+            ], style=dict(display='flex')),
+
+            html.Div(children=[
+
+                html.Div(children=[
+                    html.Label(['Outer x-var:'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    dcc.Dropdown(id='outer-xvar6')
+                ], style={'width': '10%'}),
+
+                html.Div(children=[
+                    html.Label(['Outer y-var:'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    dcc.Dropdown(id='outer-yvar6')
+                ], style={'width': '10%'}),
+
+                html.Div(children=[
+                    html.Label(['1st plot var (color):'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    dcc.Dropdown(id='sweep-var6-0')
+                ], style={'width': '10%'}),
+
+                html.Div(children=[
+                    html.Label(['2nd plot var (line style):'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    dcc.Dropdown(id='sweep-var6-1')
+                ], style={'width': '10%'}),
+
+            ], style=dict(display='flex')),
+
+            html.Div([
+                dcc.Graph(id='ef-ts',
+                          style={'width': '100%', 'height': '80vh'})
+            ])
+        ]),
+
     ])
 ])
 
@@ -451,6 +633,102 @@ def set_sv_options(sel_drive_type):
      Input('outer-yvar3', 'options'),
      Input('sweep-var3-0', 'options'),
      Input('sweep-var3-1', 'options')])
+def set_sv_value(outer_xvar_opts, outer_yvar_opts, matrix_xvar_opts, matrix_yvar_opts):
+    return outer_xvar_opts[0]['value'], outer_yvar_opts[2]['value'], \
+           matrix_xvar_opts[3]['value'], matrix_yvar_opts[1]['value']
+
+
+# ---- Infectious vector fraction ts
+@app.callback(
+    [Output('outer-xvar4', 'options'),
+     Output('outer-yvar4', 'options'),
+     Output('sweep-var4-0', 'options'),
+     Output('sweep-var4-1', 'options')],
+    [Input('drive-type4', 'value')])
+def set_sv_options(sel_drive_type):
+    outer_xvar_opts = svs_by_drive_type[sel_drive_type]
+    outer_yvar_opts = svs_by_drive_type[sel_drive_type]
+    matrix_xvar_opts = svs_by_drive_type[sel_drive_type]
+    matrix_yvar_opts = svs_by_drive_type[sel_drive_type]
+    return [{'label': i, 'value': i} for i in outer_xvar_opts], \
+           [{'label': i, 'value': i} for i in outer_yvar_opts], \
+           [{'label': i, 'value': i} for i in matrix_xvar_opts], \
+           [{'label': i, 'value': i} for i in matrix_yvar_opts]
+
+
+@app.callback(
+    [Output('outer-xvar4', 'value'),
+     Output('outer-yvar4', 'value'),
+     Output('sweep-var4-0', 'value'),
+     Output('sweep-var4-1', 'value')],
+    [Input('outer-xvar4', 'options'),
+     Input('outer-yvar4', 'options'),
+     Input('sweep-var4-0', 'options'),
+     Input('sweep-var4-1', 'options')])
+def set_sv_value(outer_xvar_opts, outer_yvar_opts, matrix_xvar_opts, matrix_yvar_opts):
+    return outer_xvar_opts[0]['value'], outer_yvar_opts[2]['value'], \
+           matrix_xvar_opts[3]['value'], matrix_yvar_opts[1]['value']
+
+
+# ---- Infectious vectors ts
+@app.callback(
+    [Output('outer-xvar5', 'options'),
+     Output('outer-yvar5', 'options'),
+     Output('sweep-var5-0', 'options'),
+     Output('sweep-var5-1', 'options')],
+    [Input('drive-type5', 'value')])
+def set_sv_options(sel_drive_type):
+    outer_xvar_opts = svs_by_drive_type[sel_drive_type]
+    outer_yvar_opts = svs_by_drive_type[sel_drive_type]
+    matrix_xvar_opts = svs_by_drive_type[sel_drive_type]
+    matrix_yvar_opts = svs_by_drive_type[sel_drive_type]
+    return [{'label': i, 'value': i} for i in outer_xvar_opts], \
+           [{'label': i, 'value': i} for i in outer_yvar_opts], \
+           [{'label': i, 'value': i} for i in matrix_xvar_opts], \
+           [{'label': i, 'value': i} for i in matrix_yvar_opts]
+
+
+@app.callback(
+    [Output('outer-xvar5', 'value'),
+     Output('outer-yvar5', 'value'),
+     Output('sweep-var5-0', 'value'),
+     Output('sweep-var5-1', 'value')],
+    [Input('outer-xvar5', 'options'),
+     Input('outer-yvar5', 'options'),
+     Input('sweep-var5-0', 'options'),
+     Input('sweep-var5-1', 'options')])
+def set_sv_value(outer_xvar_opts, outer_yvar_opts, matrix_xvar_opts, matrix_yvar_opts):
+    return outer_xvar_opts[0]['value'], outer_yvar_opts[2]['value'], \
+           matrix_xvar_opts[3]['value'], matrix_yvar_opts[1]['value']
+
+
+# ---- Effector freq ts
+@app.callback(
+    [Output('outer-xvar6', 'options'),
+     Output('outer-yvar6', 'options'),
+     Output('sweep-var6-0', 'options'),
+     Output('sweep-var6-1', 'options')],
+    [Input('drive-type6', 'value')])
+def set_sv_options(sel_drive_type):
+    outer_xvar_opts = svs_by_drive_type[sel_drive_type]
+    outer_yvar_opts = svs_by_drive_type[sel_drive_type]
+    matrix_xvar_opts = svs_by_drive_type[sel_drive_type]
+    matrix_yvar_opts = svs_by_drive_type[sel_drive_type]
+    return [{'label': i, 'value': i} for i in outer_xvar_opts], \
+           [{'label': i, 'value': i} for i in outer_yvar_opts], \
+           [{'label': i, 'value': i} for i in matrix_xvar_opts], \
+           [{'label': i, 'value': i} for i in matrix_yvar_opts]
+
+
+@app.callback(
+    [Output('outer-xvar6', 'value'),
+     Output('outer-yvar6', 'value'),
+     Output('sweep-var6-0', 'value'),
+     Output('sweep-var6-1', 'value')],
+    [Input('outer-xvar6', 'options'),
+     Input('outer-yvar6', 'options'),
+     Input('sweep-var6-0', 'options'),
+     Input('sweep-var6-1', 'options')])
 def set_sv_value(outer_xvar_opts, outer_yvar_opts, matrix_xvar_opts, matrix_yvar_opts):
     return outer_xvar_opts[0]['value'], outer_yvar_opts[2]['value'], \
            matrix_xvar_opts[3]['value'], matrix_yvar_opts[1]['value']
@@ -710,11 +988,11 @@ def update_prev_ts(sel_eir_itn, sel_drive_type,
                   row=0, col=len(ov_xvar)-1, annotation_text="Vector <br>release",
                   annotation_position="top right", annotation_font_color="black")
     if 'with ITN' in sel_eir_itn:
-        fig.add_vline(x=itn_distrib_days[1], line_dash="dot", line_color="green",
+        fig.add_vline(x=itn_distrib_days[1], line_dash="dot", line_color="forestgreen",
                       row=0, col=len(ov_xvar)-1, annotation_text="ITN <br>distribs",
-                      annotation_position="top right", annotation_font_color="green")
+                      annotation_position="top right", annotation_font_color="forestgreen")
         for distrib_day in itn_distrib_days:
-            fig.add_vline(x=distrib_day, line_dash="dot", line_color="green",
+            fig.add_vline(x=distrib_day, line_dash="dot", line_color="forestgreen",
                           row="all", col="all")
     fig.update_xaxes(range=[0, num_yrs*365])
     fig.update_yaxes(range=[0, 0.7])
@@ -730,8 +1008,8 @@ def update_prev_ts(sel_eir_itn, sel_drive_type,
      Input('outer-yvar3', 'value'),
      Input('sweep-var3-0', 'value'),
      Input('sweep-var3-1', 'value')])
-def update_prev_ts(sel_eir_itn, sel_drive_type,
-                   ov_xvar, ov_yvar, svar0, svar1):
+def update_av_ts(sel_eir_itn, sel_drive_type,
+                 ov_xvar, ov_yvar, svar0, svar1):
     # - Get selected data and sweep var vals
     svvals = sv_vals_by_drive_type[sel_drive_type]
     svdefs = sv_defs_by_drive_type[sel_drive_type]
@@ -762,94 +1040,172 @@ def update_prev_ts(sel_eir_itn, sel_drive_type,
                   row=0, col=len(ov_xvar)-1, annotation_text="Vector <br>release",
                   annotation_position="top right", annotation_font_color="black")
     if 'with ITN' in sel_eir_itn:
-        fig.add_vline(x=itn_distrib_days[1], line_dash="dot", line_color="green",
+        fig.add_vline(x=itn_distrib_days[1], line_dash="dot", line_color="forestgreen",
                       row=0, col=len(ov_xvar)-1, annotation_text="ITN <br>distribs",
-                      annotation_position="top right", annotation_font_color="green")
+                      annotation_position="top right", annotation_font_color="forestgreen")
         for distrib_day in itn_distrib_days:
-            fig.add_vline(x=distrib_day, line_dash="dot", line_color="green",
+            fig.add_vline(x=distrib_day, line_dash="dot", line_color="forestgreen",
                           row="all", col="all")
     fig.update_xaxes(range=[0, num_yrs*365])
     fig.update_yaxes(range=[0, 4000])
     return fig
 
-'''
+
+# ---- Infectious vector fraction time series
 @app.callback(
     Output('ivf-ts', 'figure'),
-    [Input('outer-xvar4', 'value'),
+    [Input('eir-itn4', 'value'),
+     Input('drive-type4', 'value'),
+     Input('outer-xvar4', 'value'),
      Input('outer-yvar4', 'value'),
      Input('sweep-var4-0', 'value'),
      Input('sweep-var4-1', 'value')])
-def update_ivf_ts(ov_xvar, ov_yvar, svar0, svar1):
-    dfinow = dfi[dfi[svar0].isin(allvarvals[svar0]) &
-                 dfi[svar1].isin(allvarvals[svar1]) &
-                 dfi[ov_xvar].isin(allvarvals[ov_xvar]) &
-                 dfi[ov_yvar].isin(allvarvals[ov_yvar])]
+def update_ivf_ts(sel_eir_itn, sel_drive_type,
+                 ov_xvar, ov_yvar, svar0, svar1):
+    # - Get selected data and sweep var vals
+    svvals = sv_vals_by_drive_type[sel_drive_type]
+    svdefs = sv_defs_by_drive_type[sel_drive_type]
+    winame = fns_by_drive_type_eir_itn[sel_drive_type][sel_eir_itn]
+    dfi = dfis[winame]
 
-    allvardefsnow = {k: v for k, v in allvardefs.items() if k not in [svar0, svar1, ov_xvar, ov_yvar]}
-    for k, v in allvardefsnow.items():
+    # - Subset dataframe
+    dfinow = dfi[dfi[svar0].isin(svvals[svar0]) &
+                 dfi[svar1].isin(svvals[svar1]) &
+                 dfi[ov_xvar].isin(svvals[ov_xvar]) &
+                 dfi[ov_yvar].isin(svvals[ov_yvar])]
+    svdefsnow = {k: v for k, v in svdefs.items() if k not in [svar0, svar1, ov_xvar, ov_yvar]}
+    for k, v in svdefsnow.items():
         dfinow = dfinow[dfinow[k] == v]
         dfinow.drop(columns=[k], inplace=True)
 
+    # - Plot
     fig = px.line(dfinow, x='Time', y='Infectious Vectors',
                   labels={
-                      'Infectious Vectors': ''
+                      'Infectious Vectors': '',
+                      'Time': 'Day',
                   },
                   color=svar0, line_dash=svar1,
                   facet_col=ov_xvar, facet_row=ov_yvar)
+    fig.add_vline(x=released_day, line_dash="dash", line_color="black",
+                  row="all", col="all")
+    fig.add_vline(x=released_day, line_dash="dash", line_color="black",
+                  row=0, col=len(ov_xvar)-1, annotation_text="Vector <br>release",
+                  annotation_position="top right", annotation_font_color="black")
+    if 'with ITN' in sel_eir_itn:
+        fig.add_vline(x=itn_distrib_days[1], line_dash="dot", line_color="forestgreen",
+                      row=0, col=len(ov_xvar)-1, annotation_text="ITN <br>distribs",
+                      annotation_position="top right", annotation_font_color="forestgreen")
+        for distrib_day in itn_distrib_days:
+            fig.add_vline(x=distrib_day, line_dash="dot", line_color="forestgreen",
+                          row="all", col="all")
+    fig.update_xaxes(range=[0, num_yrs*365])
+    fig.update_yaxes(range=[0, 4000])
     return fig
 
 
+# ---- Infectious vector numbers time series
 @app.callback(
     Output('ivn-ts', 'figure'),
-    [Input('outer-xvar5', 'value'),
+    [Input('eir-itn5', 'value'),
+     Input('drive-type5', 'value'),
+     Input('outer-xvar5', 'value'),
      Input('outer-yvar5', 'value'),
      Input('sweep-var5-0', 'value'),
      Input('sweep-var5-1', 'value')])
-def update_ivn_ts(ov_xvar, ov_yvar, svar0, svar1):
-    dfinow = dfi[dfi[svar0].isin(allvarvals[svar0]) &
-                 dfi[svar1].isin(allvarvals[svar1]) &
-                 dfi[ov_xvar].isin(allvarvals[ov_xvar]) &
-                 dfi[ov_yvar].isin(allvarvals[ov_yvar])]
+def update_iv_ts(sel_eir_itn, sel_drive_type,
+                  ov_xvar, ov_yvar, svar0, svar1):
+    # - Get selected data and sweep var vals
+    svvals = sv_vals_by_drive_type[sel_drive_type]
+    svdefs = sv_defs_by_drive_type[sel_drive_type]
+    winame = fns_by_drive_type_eir_itn[sel_drive_type][sel_eir_itn]
+    dfi = dfis[winame]
 
-    allvardefsnow = {k: v for k, v in allvardefs.items() if k not in [svar0, svar1, ov_xvar, ov_yvar]}
-    for k, v in allvardefsnow.items():
+    # - Subset dataframe
+    dfinow = dfi[dfi[svar0].isin(svvals[svar0]) &
+                 dfi[svar1].isin(svvals[svar1]) &
+                 dfi[ov_xvar].isin(svvals[ov_xvar]) &
+                 dfi[ov_yvar].isin(svvals[ov_yvar])]
+    svdefsnow = {k: v for k, v in svdefs.items() if k not in [svar0, svar1, ov_xvar, ov_yvar]}
+    for k, v in svdefsnow.items():
         dfinow = dfinow[dfinow[k] == v]
         dfinow.drop(columns=[k], inplace=True)
 
+    # - Plot
     fig = px.line(dfinow, x='Time', y='Infectious Vectors Num',
                   labels={
-                      'Infectious Vectors Num': '#'
+                      'Infectious Vectors Num': '#',
+                      'Time': 'Day',
                   },
                   color=svar0, line_dash=svar1,
                   facet_col=ov_xvar, facet_row=ov_yvar)
+    fig.add_vline(x=released_day, line_dash="dash", line_color="black",
+                  row="all", col="all")
+    fig.add_vline(x=released_day, line_dash="dash", line_color="black",
+                  row=0, col=len(ov_xvar)-1, annotation_text="Vector <br>release",
+                  annotation_position="top right", annotation_font_color="black")
+    if 'with ITN' in sel_eir_itn:
+        fig.add_vline(x=itn_distrib_days[1], line_dash="dot", line_color="forestgreen",
+                      row=0, col=len(ov_xvar)-1, annotation_text="ITN <br>distribs",
+                      annotation_position="top right", annotation_font_color="forestgreen")
+        for distrib_day in itn_distrib_days:
+            fig.add_vline(x=distrib_day, line_dash="dot", line_color="forestgreen",
+                          row="all", col="all")
+    fig.update_xaxes(range=[0, num_yrs*365])
+    fig.update_yaxes(range=[0, 4000])
     return fig
 
 
+# ---- Effector freq time series
 @app.callback(
     Output('ef-ts', 'figure'),
-    [Input('outer-xvar6', 'value'),
+    [Input('eir-itn6', 'value'),
+     Input('drive-type6', 'value'),
+     Input('outer-xvar6', 'value'),
      Input('outer-yvar6', 'value'),
      Input('sweep-var6-0', 'value'),
      Input('sweep-var6-1', 'value')])
-def update_ef_ts(ov_xvar, ov_yvar, svar0, svar1):
-    dfanow = dfa[dfa[svar0].isin(allvarvals[svar0]) &
-                 dfa[svar1].isin(allvarvals[svar1]) &
-                 dfa[ov_xvar].isin(allvarvals[ov_xvar]) &
-                 dfa[ov_yvar].isin(allvarvals[ov_yvar])]
+def update_iv_ts(sel_eir_itn, sel_drive_type,
+                 ov_xvar, ov_yvar, svar0, svar1):
+    # - Get selected data and sweep var vals
+    svvals = sv_vals_by_drive_type[sel_drive_type]
+    svdefs = sv_defs_by_drive_type[sel_drive_type]
+    winame = fns_by_drive_type_eir_itn[sel_drive_type][sel_eir_itn]
+    effallele = alleles_by_drive_type[sel_drive_type]['effector_allele']
+    dfa = dfas[winame]
 
-    allvardefsnow = {k: v for k, v in allvardefs.items() if k not in [svar0, svar1, ov_xvar, ov_yvar]}
-    for k, v in allvardefsnow.items():
+    # - Subset dataframe
+    dfanow = dfa[dfa[svar0].isin(svvals[svar0]) &
+                 dfa[svar1].isin(svvals[svar1]) &
+                 dfa[ov_xvar].isin(svvals[ov_xvar]) &
+                 dfa[ov_yvar].isin(svvals[ov_yvar])]
+    svdefsnow = {k: v for k, v in svdefs.items() if k not in [svar0, svar1, ov_xvar, ov_yvar]}
+    for k, v in svdefsnow.items():
         dfanow = dfanow[dfanow[k] == v]
         dfanow.drop(columns=[k], inplace=True)
 
-    fig = px.line(dfanow, x='Time', y=effector_allele,
+    # - Plot
+    fig = px.line(dfanow, x='Time', y=effallele,
                   labels={
-                      effector_allele: '',
+                      effallele: '',
+                      'Time': 'Day',
                   },
                   color=svar0, line_dash=svar1,
                   facet_col=ov_xvar, facet_row=ov_yvar)
+    fig.add_vline(x=released_day, line_dash="dash", line_color="black",
+                  row="all", col="all")
+    fig.add_vline(x=released_day, line_dash="dash", line_color="black",
+                  row=0, col=len(ov_xvar)-1, annotation_text="Vector <br>release",
+                  annotation_position="top right", annotation_font_color="black")
+    if 'with ITN' in sel_eir_itn:
+        fig.add_vline(x=itn_distrib_days[1], line_dash="dot", line_color="forestgreen",
+                      row=0, col=len(ov_xvar)-1, annotation_text="ITN <br>distribs",
+                      annotation_position="top right", annotation_font_color="forestgreen")
+        for distrib_day in itn_distrib_days:
+            fig.add_vline(x=distrib_day, line_dash="dot", line_color="forestgreen",
+                          row="all", col="all")
+    fig.update_xaxes(range=[0, num_yrs*365])
+    fig.update_yaxes(range=[0, 4000])
     return fig
-'''
 
 ##
 if __name__ == '__main__':
