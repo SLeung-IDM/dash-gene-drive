@@ -46,14 +46,14 @@ sv_defs_by_drive_type = {
 
 alleles_by_drive_type = {
     'Classic': {
-        'wt_alelle': 'a0',
-        'effector_alelle': 'a1',
-        'resistance_alelle': 'a2'
+        'wt_allele': 'a0',
+        'effector_allele': 'a1',
+        'resistance_allele': 'a2'
     },
     'Integral': {
-        'wt_alelle': 'b0',
-        'effector_alelle': 'b1',
-        'resistance_alelle': 'b2'
+        'wt_allele': 'b0',
+        'effector_allele': 'b1',
+        'resistance_allele': 'b2'
     }
 }
 
