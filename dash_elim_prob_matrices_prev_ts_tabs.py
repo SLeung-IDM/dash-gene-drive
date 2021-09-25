@@ -267,7 +267,7 @@ app.layout = html.Div([
                 ], style={'width': '10%'}),
 
                 html.Div(children=[
-                    html.Label(['2nd plot var (line style):'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    html.Label(['2nd plot var (style):'], style={'font-weight': 'bold', 'text-align': 'center'}),
                     dcc.Dropdown(id='sweep-var2-1')
                 ], style={'width': '10%'}),
 
@@ -323,7 +323,7 @@ app.layout = html.Div([
                 ], style={'width': '10%'}),
 
                 html.Div(children=[
-                    html.Label(['2nd plot var (line style):'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    html.Label(['2nd plot var (style):'], style={'font-weight': 'bold', 'text-align': 'center'}),
                     dcc.Dropdown(id='sweep-var3-1')
                 ], style={'width': '10%'}),
 
@@ -379,7 +379,7 @@ app.layout = html.Div([
                 ], style={'width': '10%'}),
 
                 html.Div(children=[
-                    html.Label(['2nd plot var (line style):'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    html.Label(['2nd plot var (style):'], style={'font-weight': 'bold', 'text-align': 'center'}),
                     dcc.Dropdown(id='sweep-var4-1')
                 ], style={'width': '10%'}),
 
@@ -435,7 +435,7 @@ app.layout = html.Div([
                 ], style={'width': '10%'}),
 
                 html.Div(children=[
-                    html.Label(['2nd plot var (line style):'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    html.Label(['2nd plot var (style):'], style={'font-weight': 'bold', 'text-align': 'center'}),
                     dcc.Dropdown(id='sweep-var5-1')
                 ], style={'width': '10%'}),
 
@@ -491,7 +491,7 @@ app.layout = html.Div([
                 ], style={'width': '10%'}),
 
                 html.Div(children=[
-                    html.Label(['2nd plot var (line style):'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    html.Label(['2nd plot var (style):'], style={'font-weight': 'bold', 'text-align': 'center'}),
                     dcc.Dropdown(id='sweep-var6-1')
                 ], style={'width': '10%'}),
 
@@ -547,7 +547,7 @@ app.layout = html.Div([
                 ], style={'width': '10%'}),
 
                 html.Div(children=[
-                    html.Label(['2nd plot var (line style):'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    html.Label(['2nd plot var (style):'], style={'font-weight': 'bold', 'text-align': 'center'}),
                     dcc.Dropdown(id='sweep-var7-1')
                 ], style={'width': '10%'}),
 
@@ -603,7 +603,7 @@ app.layout = html.Div([
                 ], style={'width': '10%'}),
 
                 html.Div(children=[
-                    html.Label(['2nd plot var (line style):'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    html.Label(['2nd plot var (style):'], style={'font-weight': 'bold', 'text-align': 'center'}),
                     dcc.Dropdown(id='sweep-var8-1')
                 ], style={'width': '10%'}),
 
@@ -1172,7 +1172,7 @@ def update_prev_ts(sel_eir_itn, sel_drive_type,
             fig.add_vline(x=distrib_day, line_dash="dot", line_color="forestgreen",
                           row="all", col="all")
     fig.update_xaxes(range=[0, num_yrs * 365])
-    fig.update_yaxes(range=[0, 0.7])
+    fig.update_yaxes(range=[-0.05, 0.7])
     return fig
 
 
@@ -1224,7 +1224,7 @@ def update_av_ts(sel_eir_itn, sel_drive_type,
             fig.add_vline(x=distrib_day, line_dash="dot", line_color="forestgreen",
                           row="all", col="all")
     fig.update_xaxes(range=[0, num_yrs * 365])
-    fig.update_yaxes(range=[0, 4000])
+    fig.update_yaxes(range=[-50, 4000])
     return fig
 
 
@@ -1276,7 +1276,7 @@ def update_ivf_ts(sel_eir_itn, sel_drive_type,
             fig.add_vline(x=distrib_day, line_dash="dot", line_color="forestgreen",
                           row="all", col="all")
     fig.update_xaxes(range=[0, num_yrs * 365])
-    fig.update_yaxes(range=[0, 0.12])
+    fig.update_yaxes(range=[-0.01, 0.12])
     return fig
 
 
@@ -1328,7 +1328,7 @@ def update_ivn_ts(sel_eir_itn, sel_drive_type,
             fig.add_vline(x=distrib_day, line_dash="dot", line_color="forestgreen",
                           row="all", col="all")
     fig.update_xaxes(range=[0, num_yrs * 365])
-    fig.update_yaxes(range=[0, 165])
+    fig.update_yaxes(range=[-5, 165])
     return fig
 
 
@@ -1381,7 +1381,7 @@ def update_ef_ts(sel_eir_itn, sel_drive_type,
             fig.add_vline(x=distrib_day, line_dash="dot", line_color="forestgreen",
                           row="all", col="all")
     fig.update_xaxes(range=[0, num_yrs * 365])
-    fig.update_yaxes(range=[0, 1])
+    fig.update_yaxes(range=[-0.06, 1.06])
     return fig
 
 
@@ -1434,7 +1434,7 @@ def update_wt_ts(sel_eir_itn, sel_drive_type,
             fig.add_vline(x=distrib_day, line_dash="dot", line_color="forestgreen",
                           row="all", col="all")
     fig.update_xaxes(range=[0, num_yrs * 365])
-    fig.update_yaxes(range=[0, 1])
+    fig.update_yaxes(range=[-0.06, 1.06])
     return fig
 
 
@@ -1487,7 +1487,7 @@ def update_rs_ts(sel_eir_itn, sel_drive_type,
             fig.add_vline(x=distrib_day, line_dash="dot", line_color="forestgreen",
                           row="all", col="all")
     fig.update_xaxes(range=[0, num_yrs * 365])
-    fig.update_yaxes(range=[0, 1])
+    fig.update_yaxes(range=[-0.06, 1.06])
     return fig
 
 
