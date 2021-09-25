@@ -1224,7 +1224,7 @@ def update_av_ts(sel_eir_itn, sel_drive_type,
             fig.add_vline(x=distrib_day, line_dash="dot", line_color="forestgreen",
                           row="all", col="all")
     fig.update_xaxes(range=[0, num_yrs * 365])
-    fig.update_yaxes(range=[-50, 4000])
+    fig.update_yaxes(range=[-50, 8500])
     return fig
 
 
