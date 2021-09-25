@@ -15,84 +15,67 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 ##
 # -------- Choose experiment and set up params
 
-# -- 1.) Spatial, integral, VC and GM, EIR = 30
-# wi_name = 'spatialinside_integral2l4a_VC_and_GM_aEIR30_sweep_rc_d1_rr20_se2'
-# wi_name_sh = 'spatial, integral drive, VC and GM, EIR = 30'
-# distrib_itns = True
-# num_sweep_vars = 4
-# drive_type = 'integral'
+all_options =
 
-# -- 2.) Spatial, classic, VC and GM, EIR = 30
-# wi_name = 'spatialinside_classic3allele_VC_and_GM_aEIR30_sweep_rc_d_rr0_sne'
-# wi_name_sh = 'spatial, classic drive, VC and GM, EIR = 30'
-# distrib_itns = True
-# num_sweep_vars = 4
-# drive_type = 'classic'
-# effector_allele = 'a1'
+wi_names = {
+    'spatialinside_classic3allele_GM_only_aEIR10_sweep_rc_d_rr0_sne':
+        {'drive_type': 'classic', 'nice_name': 'EIR = 10, no ITNs, classic drive release'},
+    'spatialinside_classic3allele_VC_and_GM_aEIR10_sweep_rc_d_rr0_sne':
+        {'drive_type': 'classic', 'nice_name': 'EIR = 10, with ITNs, classic drive release'},
+    'spatialinside_classic3allele_GM_only_aEIR30_sweep_rc_d_rr0_sne':
+        {'drive_type': 'classic', 'nice_name': 'EIR = 30, no ITNs, classic drive release'},
+    'spatialinside_classic3allele_VC_and_GM_aEIR30_sweep_rc_d_rr0_sne':
+        {'drive_type': 'classic', 'nice_name': 'EIR = 30, with ITNs, classic drive release'},
+    'spatialinside_classic3allele_VC_and_GM_aEIR80_sweep_rc_d_rr0_sne':
+        {'drive_type': 'classic', 'nice_name': 'EIR = 80, with ITNs, classic drive release'},
+    'spatialinside_integral2l4a_GM_only_aEIR10_sweep_rc_d1_rr20_se2':
+        {'drive_type': 'integral', 'nice_name': 'EIR = 10, no ITNs, integral drive release'},
+    'spatialinside_integral2l4a_VC_and_GM_aEIR10_sweep_rc_d1_rr20_se2':
+        {'drive_type': 'integral', 'nice_name': 'EIR = 10, with ITNs, integral drive release'},
+    'spatialinside_integral2l4a_GM_only_aEIR30_sweep_rc_d1_rr20_se2':
+        {'drive_type': 'integral', 'nice_name': 'EIR = 30, no ITNs, integral drive release'},
+    'spatialinside_integral2l4a_VC_and_GM_aEIR30_sweep_rc_d1_rr20_se2':
+        {'drive_type': 'integral', 'nice_name': 'EIR = 30, with ITNs, integral drive release'},
+    'spatialinside_integral2l4a_VC_and_GM_aEIR80_sweep_rc_d1_rr20_se2':
+        {'drive_type': 'integral', 'nice_name': 'EIR = 80, with ITNs, integral drive release'}
+}
+distrib_itns = [
+    False, True, False, True, True,
+    False, True, False, True, True
+]
 
-# -- 3.) Spatial, integral, GM only, EIR = 30
-# wi_name = 'spatialinside_integral2l4a_GM_only_aEIR30_sweep_rc_d1_rr20_se2'
-# wi_name_sh = 'spatial, integral drive, GM only, EIR = 30'
-# distrib_itns = False
-# num_sweep_vars = 4
-# drive_type = 'integral'
-
-# -- 4.) Spatial, classic, GM only, EIR = 30
-wi_name = 'spatialinside_classic3allele_GM_only_aEIR30_sweep_rc_d_rr0_sne'
-wi_name_sh = 'spatial, classic drive, GM only, EIR = 30'
-distrib_itns = False
-num_sweep_vars = 4  # 6
-drive_type = 'classic'
-effector_allele = 'a1'
-
-data_dir = 'csvs'
-
-if distrib_itns == True:
-    itn_distrib_days = [180, 3 * 365 + 180, 6 * 365 + 180]
-
-released_mosqs = True
-if released_mosqs == True:
-    released_day = 180
-
+itn_distrib_days = [180, 3 * 365 + 180, 6 * 365 + 180]
+released_day = 180
 num_yrs = 8  # length of sim
 elim_day = 2555  # day on which elim fraction is calculated
 num_seeds = 20  # num of seeds per sim
 
-# NOTE: all value arrays must be sorted increasing
-if num_sweep_vars == 6:
-    if drive_type == 'classic':
-        allvardefs = {'rc': 1.0, 'd': 1.0, 'rr0': 0.0, 'sne': 0.0,
-                      'rd': 180.0, 'nn': 6.0}
-        allvarvals = {'rc': [0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
-                      'd': [0.9, 0.95, 1.0],
-                      'rr0': [0.0, 0.001, 0.01, 0.1],
-                      'sne': [0.0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5],
-                      # 'rd': [180, 240, 300, 360, 420, 480, 545],
-                      'rd': [180.0],
-                      'nn': [6.0]}
-        # 'nn': [6, 12]}
-elif num_sweep_vars == 4:
-    if drive_type == 'classic':
-        allvardefs = {'rc': 1.0, 'd': 1.0, 'sne': 0.0, 'rr0': 0.0}
-        allvarvals = {'rc': [0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
-                      'd': [0.9, 0.95, 1.0],
-                      'rr0': [0.0, 0.001, 0.01, 0.1],
-                      'sne': [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]}
-                      # 'sne': [0.0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5]}
-    elif drive_type == 'integral':
-        allvardefs = {'rc': 1.0, 'd1': 1.0, 'se2': 0.0, 'rr20': 0.0}
-        allvarvals = {'rc': [0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
-                      'd1': [0.9, 0.95, 1.0],
-                      'rr20': [0.0, 0.001, 0.01, 0.1],
-                      'se2': [0.0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5]}
+data_dir = 'csvs'
+
+# KEEP THIS, BUT MAKE IT INTO A DICTIONARY
+# if drive_type == 'classic':
+#     allvardefs = {'rc': 1.0, 'd': 1.0, 'sne': 0.0, 'rr0': 0.0}
+#     allvarvals = {'rc': [0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+#                   'd': [0.9, 0.95, 1.0],
+#                   'rr0': [0.0, 0.001, 0.01, 0.1],
+#                   'sne': [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]}
+#                   # 'sne': [0.0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5]}
+# elif drive_type == 'integral':
+#     allvardefs = {'rc': 1.0, 'd1': 1.0, 'se2': 0.0, 'rr20': 0.0}
+#     allvarvals = {'rc': [0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+#                   'd1': [0.9, 0.95, 1.0],
+#                   'rr20': [0.0, 0.001, 0.01, 0.1],
+#                   'se2': [0.0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5]}
 
 ##
 # -------- Load data
-dfi = pd.read_csv(os.path.join(data_dir, 'dfi_' + wi_name + '.csv'))
-dfi['Infectious Vectors Num'] = dfi['Adult Vectors'] * dfi['Infectious Vectors']
-dfa = pd.read_csv(os.path.join(data_dir, 'dfa_' + wi_name + '.csv'))
-dfe = pd.read_csv(os.path.join(data_dir, 'dfe_' + wi_name + '.csv'))
-dfed = pd.read_csv(os.path.join(data_dir, 'dfed_' + wi_name + '.csv'))
+dfe = []
+for iexp, wi_name in enumerate(wi_names):
+    # dfi.append(pd.read_csv(os.path.join(data_dir, 'dfi_' + wi_name + '.csv')))
+    # dfi[iexp]['Infectious Vectors Num'] = dfi[iexp]['Adult Vectors'] * dfi[iexp]['Infectious Vectors']
+    # dfa.append(pd.read_csv(os.path.join(data_dir, 'dfa_' + wi_name + '.csv')))
+    dfe.append(pd.read_csv(os.path.join(data_dir, 'dfe_' + wi_name + '.csv')))
+    # dfed.append(pd.read_csv(os.path.join(data_dir, 'dfed_' + wi_name + '.csv')))
 
 ##
 # -------- Dash
@@ -100,7 +83,20 @@ app.layout = html.Div([
     dcc.Tabs([
         dcc.Tab(label='Elimination probability matrices', children=[
 
-            html.H2(children='Elim probabilities: ' + wi_name_sh),
+            html.H2(children='Elimination probabilities'),
+
+            html.Div(children=[
+
+                html.Div(children=[
+                    html.Label(['Experiment:'], style={'font-weight': 'bold', 'text-align': 'center'}),
+                    dcc.Dropdown(
+                        id='exp0',
+                        options=[{'label': i, 'value': i} for i in list(wi_names.keys())],
+                        value='rc'
+                    )
+                ], style={'width': '40%'})
+
+            ], style=dict(display='flex')),
 
             html.Div(children=[
 
@@ -146,6 +142,7 @@ app.layout = html.Div([
             ])
         ]),
 
+        '''
         dcc.Tab(label='Years to elimination matrices', children=[
 
             html.H2(children='Years to elim: ' + wi_name_sh),
@@ -432,18 +429,24 @@ app.layout = html.Div([
                 dcc.Graph(id='ef-ts',
                           style={'width': '100%', 'height': '80vh'})
             ])
-        ])
+        ])'''
     ])
 ])
 
 
 @app.callback(
     Output('elim-prob-matrices', 'figure'),
-    [Input('outer-xvar0', 'value'),
+    [Input('eir0', 'value'),
+     Input('vc-gm0', 'value'),
+     Input('drive-type0', 'value'),
+     Input('outer-xvar0', 'value'),
      Input('outer-yvar0', 'value'),
      Input('matrix-xvar0', 'value'),
      Input('matrix-yvar0', 'value')])
 def update_elim_prob_matrices(ov_xvar, ov_yvar, mat_xvar, mat_yvar):
+    # - Get selected data
+
+
     # - Get all outer xvar and yvar vals
     ov_xvar_vals = allvarvals[ov_xvar]
     ov_yvar_vals = allvarvals[ov_yvar]
