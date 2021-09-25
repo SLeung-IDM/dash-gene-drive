@@ -733,6 +733,7 @@ def set_sv_value(outer_xvar_opts, outer_yvar_opts, matrix_xvar_opts, matrix_yvar
     return outer_xvar_opts[0]['value'], outer_yvar_opts[2]['value'], \
            matrix_xvar_opts[3]['value'], matrix_yvar_opts[1]['value']
 
+
 # ---------------------------------------------
 # Callbacks for figures
 # ---------------------------------------------
@@ -985,16 +986,16 @@ def update_prev_ts(sel_eir_itn, sel_drive_type,
     fig.add_vline(x=released_day, line_dash="dash", line_color="black",
                   row="all", col="all")
     fig.add_vline(x=released_day, line_dash="dash", line_color="black",
-                  row=0, col=len(ov_xvar)-1, annotation_text="Vector <br>release",
+                  row=0, col=len(ov_xvar) - 1, annotation_text="Vector <br>release",
                   annotation_position="top right", annotation_font_color="black")
     if 'with ITN' in sel_eir_itn:
         fig.add_vline(x=itn_distrib_days[1], line_dash="dot", line_color="forestgreen",
-                      row=0, col=len(ov_xvar)-1, annotation_text="ITN <br>distribs",
+                      row=0, col=len(ov_xvar) - 1, annotation_text="ITN <br>distribs",
                       annotation_position="top right", annotation_font_color="forestgreen")
         for distrib_day in itn_distrib_days:
             fig.add_vline(x=distrib_day, line_dash="dot", line_color="forestgreen",
                           row="all", col="all")
-    fig.update_xaxes(range=[0, num_yrs*365])
+    fig.update_xaxes(range=[0, num_yrs * 365])
     fig.update_yaxes(range=[0, 0.7])
     return fig
 
@@ -1037,16 +1038,16 @@ def update_av_ts(sel_eir_itn, sel_drive_type,
     fig.add_vline(x=released_day, line_dash="dash", line_color="black",
                   row="all", col="all")
     fig.add_vline(x=released_day, line_dash="dash", line_color="black",
-                  row=0, col=len(ov_xvar)-1, annotation_text="Vector <br>release",
+                  row=0, col=len(ov_xvar) - 1, annotation_text="Vector <br>release",
                   annotation_position="top right", annotation_font_color="black")
     if 'with ITN' in sel_eir_itn:
         fig.add_vline(x=itn_distrib_days[1], line_dash="dot", line_color="forestgreen",
-                      row=0, col=len(ov_xvar)-1, annotation_text="ITN <br>distribs",
+                      row=0, col=len(ov_xvar) - 1, annotation_text="ITN <br>distribs",
                       annotation_position="top right", annotation_font_color="forestgreen")
         for distrib_day in itn_distrib_days:
             fig.add_vline(x=distrib_day, line_dash="dot", line_color="forestgreen",
                           row="all", col="all")
-    fig.update_xaxes(range=[0, num_yrs*365])
+    fig.update_xaxes(range=[0, num_yrs * 365])
     fig.update_yaxes(range=[0, 4000])
     return fig
 
@@ -1061,7 +1062,7 @@ def update_av_ts(sel_eir_itn, sel_drive_type,
      Input('sweep-var4-0', 'value'),
      Input('sweep-var4-1', 'value')])
 def update_ivf_ts(sel_eir_itn, sel_drive_type,
-                 ov_xvar, ov_yvar, svar0, svar1):
+                  ov_xvar, ov_yvar, svar0, svar1):
     # - Get selected data and sweep var vals
     svvals = sv_vals_by_drive_type[sel_drive_type]
     svdefs = sv_defs_by_drive_type[sel_drive_type]
@@ -1089,17 +1090,17 @@ def update_ivf_ts(sel_eir_itn, sel_drive_type,
     fig.add_vline(x=released_day, line_dash="dash", line_color="black",
                   row="all", col="all")
     fig.add_vline(x=released_day, line_dash="dash", line_color="black",
-                  row=0, col=len(ov_xvar)-1, annotation_text="Vector <br>release",
+                  row=0, col=len(ov_xvar) - 1, annotation_text="Vector <br>release",
                   annotation_position="top right", annotation_font_color="black")
     if 'with ITN' in sel_eir_itn:
         fig.add_vline(x=itn_distrib_days[1], line_dash="dot", line_color="forestgreen",
-                      row=0, col=len(ov_xvar)-1, annotation_text="ITN <br>distribs",
+                      row=0, col=len(ov_xvar) - 1, annotation_text="ITN <br>distribs",
                       annotation_position="top right", annotation_font_color="forestgreen")
         for distrib_day in itn_distrib_days:
             fig.add_vline(x=distrib_day, line_dash="dot", line_color="forestgreen",
                           row="all", col="all")
-    fig.update_xaxes(range=[0, num_yrs*365])
-    fig.update_yaxes(range=[0, 4000])
+    fig.update_xaxes(range=[0, num_yrs * 365])
+    fig.update_yaxes(range=[0, 0.12])
     return fig
 
 
@@ -1113,7 +1114,7 @@ def update_ivf_ts(sel_eir_itn, sel_drive_type,
      Input('sweep-var5-0', 'value'),
      Input('sweep-var5-1', 'value')])
 def update_iv_ts(sel_eir_itn, sel_drive_type,
-                  ov_xvar, ov_yvar, svar0, svar1):
+                 ov_xvar, ov_yvar, svar0, svar1):
     # - Get selected data and sweep var vals
     svvals = sv_vals_by_drive_type[sel_drive_type]
     svdefs = sv_defs_by_drive_type[sel_drive_type]
@@ -1141,17 +1142,17 @@ def update_iv_ts(sel_eir_itn, sel_drive_type,
     fig.add_vline(x=released_day, line_dash="dash", line_color="black",
                   row="all", col="all")
     fig.add_vline(x=released_day, line_dash="dash", line_color="black",
-                  row=0, col=len(ov_xvar)-1, annotation_text="Vector <br>release",
+                  row=0, col=len(ov_xvar) - 1, annotation_text="Vector <br>release",
                   annotation_position="top right", annotation_font_color="black")
     if 'with ITN' in sel_eir_itn:
         fig.add_vline(x=itn_distrib_days[1], line_dash="dot", line_color="forestgreen",
-                      row=0, col=len(ov_xvar)-1, annotation_text="ITN <br>distribs",
+                      row=0, col=len(ov_xvar) - 1, annotation_text="ITN <br>distribs",
                       annotation_position="top right", annotation_font_color="forestgreen")
         for distrib_day in itn_distrib_days:
             fig.add_vline(x=distrib_day, line_dash="dot", line_color="forestgreen",
                           row="all", col="all")
-    fig.update_xaxes(range=[0, num_yrs*365])
-    fig.update_yaxes(range=[0, 4000])
+    fig.update_xaxes(range=[0, num_yrs * 365])
+    fig.update_yaxes(range=[0, 165])
     return fig
 
 
@@ -1194,18 +1195,19 @@ def update_iv_ts(sel_eir_itn, sel_drive_type,
     fig.add_vline(x=released_day, line_dash="dash", line_color="black",
                   row="all", col="all")
     fig.add_vline(x=released_day, line_dash="dash", line_color="black",
-                  row=0, col=len(ov_xvar)-1, annotation_text="Vector <br>release",
+                  row=0, col=len(ov_xvar) - 1, annotation_text="Vector <br>release",
                   annotation_position="top right", annotation_font_color="black")
     if 'with ITN' in sel_eir_itn:
         fig.add_vline(x=itn_distrib_days[1], line_dash="dot", line_color="forestgreen",
-                      row=0, col=len(ov_xvar)-1, annotation_text="ITN <br>distribs",
+                      row=0, col=len(ov_xvar) - 1, annotation_text="ITN <br>distribs",
                       annotation_position="top right", annotation_font_color="forestgreen")
         for distrib_day in itn_distrib_days:
             fig.add_vline(x=distrib_day, line_dash="dot", line_color="forestgreen",
                           row="all", col="all")
-    fig.update_xaxes(range=[0, num_yrs*365])
-    fig.update_yaxes(range=[0, 4000])
+    fig.update_xaxes(range=[0, num_yrs * 365])
+    fig.update_yaxes(range=[0, 1])
     return fig
+
 
 ##
 if __name__ == '__main__':
