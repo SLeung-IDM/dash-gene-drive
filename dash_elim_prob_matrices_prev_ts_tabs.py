@@ -1453,7 +1453,7 @@ def update_rs_ts(sel_eir_itn, sel_drive_type,
     svvals = sv_vals_by_drive_type[sel_drive_type]
     svdefs = sv_defs_by_drive_type[sel_drive_type]
     winame = fns_by_drive_type_eir_itn[sel_drive_type][sel_eir_itn]
-    rsallele = alleles_by_drive_type[sel_drive_type]['rs_allele']
+    rsallele = alleles_by_drive_type[sel_drive_type]['resistance_allele']
     dfa = dfas[winame]
 
     # - Subset dataframe
