@@ -5,9 +5,15 @@ from dash.dependencies import Input, Output
 import numpy as np
 import os
 import pandas as pd
+import plotly.colors as colors
 import plotly.express as px
 import plotly.figure_factory as ff
 from plotly.subplots import make_subplots
+
+greens_full = colors.get_colorscale('greens')
+greens = greens_full[1:]
+for i in range(0, len(greens)):
+    greens[i][0] = i/(len(greens)-1)
 
 # external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 # app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
@@ -965,7 +971,7 @@ def update_elim_prob_matrices(sel_eir_itn, sel_drive_type,
                 zmin=0,
                 zmax=1,
                 showscale=True,
-                colorscale='YlOrBr_r')
+                colorscale=greens)
             )
 
             # - Update annotation axes
@@ -1073,7 +1079,7 @@ def update_elim_time_matrices(sel_eir_itn, sel_drive_type,
                 zmin=2.5,
                 zmax=num_yrs,
                 showscale=True,
-                colorscale='YlOrBr')
+                colorscale=greens)
             )
 
             # - Update annotation axes
