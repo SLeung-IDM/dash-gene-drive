@@ -229,9 +229,9 @@ app.layout = html.Div([
             ])
         ]),
 
-        dcc.Tab(label='PfHRP2 prevalence time series', children=[
+        dcc.Tab(label='Prevalence time series', children=[
 
-            html.H2(children='PfHRP2 prevalence'),
+            html.H2(children='Prevalence'),
 
             html.Div(children=[
 
@@ -1158,9 +1158,9 @@ def update_prev_ts(sel_eir_itn, sel_drive_type,
         dfinow.drop(columns=[k], inplace=True)
 
     # - Plot
-    fig = px.line(dfinow, x='Time', y='PfHRP2 Prevalence',
+    fig = px.line(dfinow, x='Time', y='True Prevalence',
                   labels={
-                      'PfHRP2 Prevalence': '',
+                      'True Prevalence': '',
                       'Time': 'Day',
                   },
                   color=svar0, line_dash=svar1,
