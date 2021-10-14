@@ -21,10 +21,21 @@ app = dash.Dash(__name__)
 
 ##
 # -------- Choose experiment and set up params
+# - try something
 svs_by_drive_type = {
-    'Classic': ['rc', 'd', 'rr0', 'sne'],
-    'Integral': ['rc', 'd1', 'rr20', 'se2'],
+    'Classic': {'rc': 'rc (pheno. effect.)',
+                'd': 'd (drive efficiency)',
+                'rr0': 'rr0 (init. resistance)',
+                'sne': 'sne (fitness cost)'},
+    'Integral': {'rc': 'rc (pheno. effect.)',
+                 'd1': 'd1 (drive efficiency)',
+                 'rr20': 'rr20 (init. resistance)',
+                 'se2': 'se2 (fitness cost)'}
 }
+# svs_by_drive_type = {
+#     'Classic': ['rc', 'd', 'rr0', 'sne'],
+#     'Integral': ['rc', 'd1', 'rr20', 'se2'],
+# }
 
 sv_vals_by_drive_type = {
     'Classic': {
@@ -896,10 +907,15 @@ def set_sv_options(sel_drive_type):
     outer_yvar_opts = svs_by_drive_type[sel_drive_type]
     matrix_xvar_opts = svs_by_drive_type[sel_drive_type]
     matrix_yvar_opts = svs_by_drive_type[sel_drive_type]
-    return [{'label': i, 'value': i} for i in outer_xvar_opts], \
-           [{'label': i, 'value': i} for i in outer_yvar_opts], \
-           [{'label': i, 'value': i} for i in matrix_xvar_opts], \
-           [{'label': i, 'value': i} for i in matrix_yvar_opts]
+    # - try something
+    return [{'label': outer_xvar_opts[i], 'value': i} for i in outer_xvar_opts], \
+           [{'label': outer_yvar_opts[i], 'value': i} for i in outer_yvar_opts], \
+           [{'label': matrix_xvar_opts[i], 'value': i} for i in matrix_xvar_opts], \
+           [{'label': matrix_yvar_opts[i], 'value': i} for i in matrix_yvar_opts]
+    # return [{'label': i, 'value': i} for i in outer_xvar_opts], \
+    #        [{'label': i, 'value': i} for i in outer_yvar_opts], \
+    #        [{'label': i, 'value': i} for i in matrix_xvar_opts], \
+    #        [{'label': i, 'value': i} for i in matrix_yvar_opts]
 
 
 @app.callback(
