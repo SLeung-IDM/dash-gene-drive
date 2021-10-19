@@ -14,6 +14,10 @@ greens_full = colors.get_colorscale('greens')
 greens = greens_full[1:]
 for i in range(0, len(greens)):
     greens[i][0] = i/(len(greens)-1)
+greens_r_full = colors.get_colorscale('greens_r')
+greens_r = greens_r_full[:-1]
+for i in range(0, len(greens_r)):
+    greens_r[i][0] = i/(len(greens_r)-1)
 
 # external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 # app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
@@ -1095,7 +1099,7 @@ def update_elim_time_matrices(sel_eir_itn, sel_drive_type,
                 zmin=2.5,
                 zmax=num_yrs,
                 showscale=True,
-                colorscale=greens)
+                colorscale=greens_r)
             )
 
             # - Update annotation axes
