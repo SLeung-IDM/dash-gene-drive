@@ -127,11 +127,24 @@ dfeds = {}
 for drive_typenow in fns_by_drive_type_eir_itn.keys():
     for eir_itnnow in fns_by_drive_type_eir_itn[drive_typenow].keys():
         winame = fns_by_drive_type_eir_itn[drive_typenow][eir_itnnow]
-        dfis[winame] = optimize_dataframe(pd.read_csv(os.path.join(data_dir, 'dfi_' + winame + '.csv')))
+
+        cols_i = list(pd.read_csv(os.path.join(data_dir, 'dfi_' + winame + '.csv'), nrows=1))
+        dfis[winame] = optimize_dataframe(
+            pd.read_csv(os.path.join(data_dir, 'dfi_' + winame + '.csv'),
+                        usecols=[i for i in cols_i if i != 'PfHRP2 Prevalence' and 'std' not in i])
+        )
         dfis[winame]['Infectious Vectors Num'] = dfis[winame]['Adult Vectors'] * dfis[winame]['Infectious Vectors']
+
+        cols_a = list(pd.read_csv(os.path.join(data_dir, 'dfa_' + winame + '.csv'), nrows=1))
+        dfas[winame] = optimize_dataframe(
+            pd.read_csv(os.path.join(data_dir, 'dfa_' + winame + '.csv'),
+                        usecols=[i for i in cols_a if i != 'Total Female Population' and 'std' not in i]))
         dfas[winame] = optimize_dataframe(pd.read_csv(os.path.join(data_dir, 'dfa_' + winame + '.csv')))
+
         dfes[winame] = pd.read_csv(os.path.join(data_dir, 'dfe_' + winame + '.csv'))
+
         dfeds[winame] = optimize_dataframe(pd.read_csv(os.path.join(data_dir, 'dfed_' + winame + '.csv')))
+
 
 # - try something
 # dfi = dfis[winame]
@@ -932,15 +945,10 @@ def set_sv_options(sel_drive_type):
     outer_yvar_opts = svs_by_drive_type[sel_drive_type]
     matrix_xvar_opts = svs_by_drive_type[sel_drive_type]
     matrix_yvar_opts = svs_by_drive_type[sel_drive_type]
-    # - try something
     return [{'label': outer_xvar_opts[i], 'value': i} for i in outer_xvar_opts], \
            [{'label': outer_yvar_opts[i], 'value': i} for i in outer_yvar_opts], \
            [{'label': matrix_xvar_opts[i], 'value': i} for i in matrix_xvar_opts], \
            [{'label': matrix_yvar_opts[i], 'value': i} for i in matrix_yvar_opts]
-    # return [{'label': i, 'value': i} for i in outer_xvar_opts], \
-    #        [{'label': i, 'value': i} for i in outer_yvar_opts], \
-    #        [{'label': i, 'value': i} for i in matrix_xvar_opts], \
-    #        [{'label': i, 'value': i} for i in matrix_yvar_opts]
 
 
 @app.callback(
@@ -1189,14 +1197,15 @@ def update_prev_ts(sel_eir_itn, sel_drive_type,
     dfi = dfis[winame]
 
     # - Subset dataframe
-    dfi = dfi[dfi[svar0].isin(svvals[svar0]) &
-              dfi[svar1].isin(svvals[svar1]) &
-              dfi[ov_xvar].isin(svvals[ov_xvar]) &
-              dfi[ov_yvar].isin(svvals[ov_yvar])]
     svdefsnow = {k: v for k, v in svdefs.items() if k not in [svar0, svar1, ov_xvar, ov_yvar]}
     for k, v in svdefsnow.items():
         dfi = dfi[dfi[k] == v]
         dfi.drop(columns=[k], inplace=True)
+    dfi = dfi[[svar0, svar1, ov_xvar, ov_yvar, 'Time', 'True Prevalence']]
+    dfi = dfi[dfi[svar0].isin(svvals[svar0]) &
+              dfi[svar1].isin(svvals[svar1]) &
+              dfi[ov_xvar].isin(svvals[ov_xvar]) &
+              dfi[ov_yvar].isin(svvals[ov_yvar])]
 
     # - Plot
     fig = px.line(dfi, x='Time', y='True Prevalence',
@@ -1241,14 +1250,15 @@ def update_av_ts(sel_eir_itn, sel_drive_type,
     dfi = dfis[winame]
 
     # - Subset dataframe
-    dfi = dfi[dfi[svar0].isin(svvals[svar0]) &
-              dfi[svar1].isin(svvals[svar1]) &
-              dfi[ov_xvar].isin(svvals[ov_xvar]) &
-              dfi[ov_yvar].isin(svvals[ov_yvar])]
     svdefsnow = {k: v for k, v in svdefs.items() if k not in [svar0, svar1, ov_xvar, ov_yvar]}
     for k, v in svdefsnow.items():
         dfi = dfi[dfi[k] == v]
         dfi.drop(columns=[k], inplace=True)
+    dfi = dfi[[svar0, svar1, ov_xvar, ov_yvar, 'Time', 'Adult Vectors']]
+    dfi = dfi[dfi[svar0].isin(svvals[svar0]) &
+              dfi[svar1].isin(svvals[svar1]) &
+              dfi[ov_xvar].isin(svvals[ov_xvar]) &
+              dfi[ov_yvar].isin(svvals[ov_yvar])]
 
     # - Plot
     fig = px.line(dfi, x='Time', y='Adult Vectors',
@@ -1293,14 +1303,15 @@ def update_ivf_ts(sel_eir_itn, sel_drive_type,
     dfi = dfis[winame]
 
     # - Subset dataframe
-    dfi = dfi[dfi[svar0].isin(svvals[svar0]) &
-              dfi[svar1].isin(svvals[svar1]) &
-              dfi[ov_xvar].isin(svvals[ov_xvar]) &
-              dfi[ov_yvar].isin(svvals[ov_yvar])]
     svdefsnow = {k: v for k, v in svdefs.items() if k not in [svar0, svar1, ov_xvar, ov_yvar]}
     for k, v in svdefsnow.items():
         dfi = dfi[dfi[k] == v]
         dfi.drop(columns=[k], inplace=True)
+    dfi = dfi[[svar0, svar1, ov_xvar, ov_yvar, 'Time', 'Infectious Vectors']]
+    dfi = dfi[dfi[svar0].isin(svvals[svar0]) &
+              dfi[svar1].isin(svvals[svar1]) &
+              dfi[ov_xvar].isin(svvals[ov_xvar]) &
+              dfi[ov_yvar].isin(svvals[ov_yvar])]
 
     # - Plot
     fig = px.line(dfi, x='Time', y='Infectious Vectors',
@@ -1345,14 +1356,15 @@ def update_ivn_ts(sel_eir_itn, sel_drive_type,
     dfi = dfis[winame]
 
     # - Subset dataframe
-    dfi = dfi[dfi[svar0].isin(svvals[svar0]) &
-              dfi[svar1].isin(svvals[svar1]) &
-              dfi[ov_xvar].isin(svvals[ov_xvar]) &
-              dfi[ov_yvar].isin(svvals[ov_yvar])]
     svdefsnow = {k: v for k, v in svdefs.items() if k not in [svar0, svar1, ov_xvar, ov_yvar]}
     for k, v in svdefsnow.items():
         dfi = dfi[dfi[k] == v]
         dfi.drop(columns=[k], inplace=True)
+    dfi = dfi[[svar0, svar1, ov_xvar, ov_yvar, 'Time', 'Infectious Vectors Num']]
+    dfi = dfi[dfi[svar0].isin(svvals[svar0]) &
+              dfi[svar1].isin(svvals[svar1]) &
+              dfi[ov_xvar].isin(svvals[ov_xvar]) &
+              dfi[ov_yvar].isin(svvals[ov_yvar])]
 
     # - Plot
     fig = px.line(dfi, x='Time', y='Infectious Vectors Num',
@@ -1398,14 +1410,15 @@ def update_ef_ts(sel_eir_itn, sel_drive_type,
     dfa = dfas[winame]
 
     # - Subset dataframe
-    dfa = dfa[dfa[svar0].isin(svvals[svar0]) &
-              dfa[svar1].isin(svvals[svar1]) &
-              dfa[ov_xvar].isin(svvals[ov_xvar]) &
-              dfa[ov_yvar].isin(svvals[ov_yvar])]
     svdefsnow = {k: v for k, v in svdefs.items() if k not in [svar0, svar1, ov_xvar, ov_yvar]}
     for k, v in svdefsnow.items():
         dfa = dfa[dfa[k] == v]
         dfa.drop(columns=[k], inplace=True)
+    dfa = dfa[[svar0, svar1, ov_xvar, ov_yvar, 'Time', effallele]]
+    dfa = dfa[dfa[svar0].isin(svvals[svar0]) &
+              dfa[svar1].isin(svvals[svar1]) &
+              dfa[ov_xvar].isin(svvals[ov_xvar]) &
+              dfa[ov_yvar].isin(svvals[ov_yvar])]
 
     # - Plot
     fig = px.line(dfa, x='Time', y=effallele,
@@ -1451,14 +1464,15 @@ def update_wt_ts(sel_eir_itn, sel_drive_type,
     dfa = dfas[winame]
 
     # - Subset dataframe
-    dfa = dfa[dfa[svar0].isin(svvals[svar0]) &
-              dfa[svar1].isin(svvals[svar1]) &
-              dfa[ov_xvar].isin(svvals[ov_xvar]) &
-              dfa[ov_yvar].isin(svvals[ov_yvar])]
     svdefsnow = {k: v for k, v in svdefs.items() if k not in [svar0, svar1, ov_xvar, ov_yvar]}
     for k, v in svdefsnow.items():
         dfa = dfa[dfa[k] == v]
         dfa.drop(columns=[k], inplace=True)
+    dfa = dfa[[svar0, svar1, ov_xvar, ov_yvar, 'Time', wtallele]]
+    dfa = dfa[dfa[svar0].isin(svvals[svar0]) &
+              dfa[svar1].isin(svvals[svar1]) &
+              dfa[ov_xvar].isin(svvals[ov_xvar]) &
+              dfa[ov_yvar].isin(svvals[ov_yvar])]
 
     # - Plot
     fig = px.line(dfa, x='Time', y=wtallele,
@@ -1504,14 +1518,15 @@ def update_rs_ts(sel_eir_itn, sel_drive_type,
     dfa = dfas[winame]
 
     # - Subset dataframe
-    dfa = dfa[dfa[svar0].isin(svvals[svar0]) &
-              dfa[svar1].isin(svvals[svar1]) &
-              dfa[ov_xvar].isin(svvals[ov_xvar]) &
-              dfa[ov_yvar].isin(svvals[ov_yvar])]
     svdefsnow = {k: v for k, v in svdefs.items() if k not in [svar0, svar1, ov_xvar, ov_yvar]}
     for k, v in svdefsnow.items():
         dfa = dfa[dfa[k] == v]
         dfa.drop(columns=[k], inplace=True)
+    dfa = dfa[[svar0, svar1, ov_xvar, ov_yvar, 'Time', rsallele]]
+    dfa = dfa[dfa[svar0].isin(svvals[svar0]) &
+              dfa[svar1].isin(svvals[svar1]) &
+              dfa[ov_xvar].isin(svvals[ov_xvar]) &
+              dfa[ov_yvar].isin(svvals[ov_yvar])]
 
     # - Plot
     fig = px.line(dfa, x='Time', y=rsallele,
