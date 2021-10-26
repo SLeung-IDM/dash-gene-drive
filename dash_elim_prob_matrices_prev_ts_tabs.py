@@ -13,11 +13,11 @@ from plotly.subplots import make_subplots
 greens_full = colors.get_colorscale('greens')
 greens = greens_full[1:]
 for i in range(0, len(greens)):
-    greens[i][0] = i/(len(greens)-1)
+    greens[i][0] = i / (len(greens) - 1)
 greens_r_full = colors.get_colorscale('greens_r')
 greens_r = greens_r_full[:-1]
 for i in range(0, len(greens_r)):
-    greens_r[i][0] = i/(len(greens_r)-1)
+    greens_r[i][0] = i / (len(greens_r) - 1)
 
 # external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 # app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
@@ -25,7 +25,6 @@ app = dash.Dash(__name__)
 
 ##
 # -------- Choose experiment and set up params
-# - try something
 svs_by_drive_type = {
     'Classic': {'rc': 'rc (pheno. effect.)',
                 'd': 'd (drive efficiency)',
@@ -36,10 +35,6 @@ svs_by_drive_type = {
                  'rr20': 'rr20 (init. resistance)',
                  'se2': 'se2 (fitness cost)'}
 }
-# svs_by_drive_type = {
-#     'Classic': ['rc', 'd', 'rr0', 'sne'],
-#     'Integral': ['rc', 'd1', 'rr20', 'se2'],
-# }
 
 sv_vals_by_drive_type = {
     'Classic': {
@@ -113,6 +108,18 @@ data_dir = 'csvs'
 
 ##
 # -------- Load data
+column_types = dict(Time='uint16',
+                    True_Prevalence_elim_day='Int64'
+                    )
+
+
+def optimize_dataframe(simdata):
+    for column, item_type in column_types.items():
+        if column in simdata.columns:
+            simdata[column] = simdata[column].astype(item_type)
+    return simdata
+
+
 dfis = {}
 dfas = {}
 dfes = {}
@@ -120,11 +127,25 @@ dfeds = {}
 for drive_typenow in fns_by_drive_type_eir_itn.keys():
     for eir_itnnow in fns_by_drive_type_eir_itn[drive_typenow].keys():
         winame = fns_by_drive_type_eir_itn[drive_typenow][eir_itnnow]
-        dfis[winame] = pd.read_csv(os.path.join(data_dir, 'dfi_' + winame + '.csv'))
+        dfis[winame] = optimize_dataframe(pd.read_csv(os.path.join(data_dir, 'dfi_' + winame + '.csv')))
         dfis[winame]['Infectious Vectors Num'] = dfis[winame]['Adult Vectors'] * dfis[winame]['Infectious Vectors']
-        dfas[winame] = pd.read_csv(os.path.join(data_dir, 'dfa_' + winame + '.csv'))
+        dfas[winame] = optimize_dataframe(pd.read_csv(os.path.join(data_dir, 'dfa_' + winame + '.csv')))
         dfes[winame] = pd.read_csv(os.path.join(data_dir, 'dfe_' + winame + '.csv'))
-        dfeds[winame] = pd.read_csv(os.path.join(data_dir, 'dfed_' + winame + '.csv'))
+        dfeds[winame] = optimize_dataframe(pd.read_csv(os.path.join(data_dir, 'dfed_' + winame + '.csv')))
+
+# - try something
+# dfi = dfis[winame]
+# sel_eir_itn = 'EIR = 10, no ITNs'
+# sel_drive_type = 'Integral'
+# ov_xvar = 'rc'
+# ov_yvar = 'd1'
+# mat_xvar = 'rr20'
+# mat_yvar = 'se2'
+#
+# dfi = optimize_dataframe(dfi)
+# dfa = optimize_dataframe(dfa)
+#
+# pause
 
 ##
 # -------- Dash
@@ -964,15 +985,15 @@ def update_elim_prob_matrices(sel_eir_itn, sel_drive_type,
     iaxis = 1
     subplots = []
 
-    dfesm = dfe[dfe[mat_xvar].isin(svvals[mat_xvar]) &
-                dfe[mat_yvar].isin(svvals[mat_yvar])]
+    dfe = dfe[dfe[mat_xvar].isin(svvals[mat_xvar]) &
+              dfe[mat_yvar].isin(svvals[mat_yvar])]
 
     for ov_yvar_val in ov_yvar_vals:
         for ov_xvar_val in ov_xvar_vals:
 
             # - Compute heatmap values
             allvardefsnow = {k: v for k, v in svdefs.items() if k not in [mat_xvar, mat_yvar, ov_xvar, ov_yvar]}
-            dfenow = dfesm
+            dfenow = dfe
             if len(allvardefsnow) > 0:
                 for k, v in allvardefsnow.items():
                     dfenow = dfenow[dfenow[k] == v]
@@ -980,8 +1001,8 @@ def update_elim_prob_matrices(sel_eir_itn, sel_drive_type,
             dfenow = dfenow[dfenow[ov_xvar] == ov_xvar_val]
             dfenow = dfenow[dfenow[ov_yvar] == ov_yvar_val]
             dfenow.drop(columns=[ov_xvar, ov_yvar], inplace=True)
-            dfenownow = (dfenow.groupby([mat_xvar, mat_yvar])['True_Prevalence_elim'].sum() / num_seeds).reset_index()
-            matnow = dfenownow.pivot_table(index=[mat_yvar], columns=[mat_xvar], values='True_Prevalence_elim')
+            dfenow = (dfenow.groupby([mat_xvar, mat_yvar])['True_Prevalence_elim'].sum() / num_seeds).reset_index()
+            matnow = dfenow.pivot_table(index=[mat_yvar], columns=[mat_xvar], values='True_Prevalence_elim')
 
             # - Create annotated heatmap
             subplots.append(ff.create_annotated_heatmap(
@@ -1065,15 +1086,15 @@ def update_elim_time_matrices(sel_eir_itn, sel_drive_type,
     iaxis = 1
     subplots = []
 
-    dfedsm = dfed[dfed[mat_xvar].isin(svvals[mat_xvar]) &
-                  dfed[mat_yvar].isin(svvals[mat_yvar])]
+    dfed = dfed[dfed[mat_xvar].isin(svvals[mat_xvar]) &
+                dfed[mat_yvar].isin(svvals[mat_yvar])]
 
     for ov_yvar_val in ov_yvar_vals:
         for ov_xvar_val in ov_xvar_vals:
 
             # - Compute heatmap values
             svdefsnow = {k: v for k, v in svdefs.items() if k not in [mat_xvar, mat_yvar, ov_xvar, ov_yvar]}
-            dfednow = dfedsm
+            dfednow = dfed
             if len(svdefsnow) > 0:
                 for k, v in svdefsnow.items():
                     dfednow = dfednow[dfednow[k] == v]
@@ -1084,9 +1105,9 @@ def update_elim_time_matrices(sel_eir_itn, sel_drive_type,
             dfednow.loc[dfednow['True_Prevalence_elim'] == False,
                         'True_Prevalence_elim_day'] = np.nan
             dfednow.drop(columns=['True_Prevalence_elim'], inplace=True)
-            dfednownow = (dfednow.groupby([mat_xvar, mat_yvar])['True_Prevalence_elim_day'].mean()).reset_index()
-            matnow = dfednownow.pivot_table(index=[mat_yvar], columns=[mat_xvar],
-                                            values='True_Prevalence_elim_day', dropna=False)
+            dfednow = (dfednow.groupby([mat_xvar, mat_yvar])['True_Prevalence_elim_day'].mean()).reset_index()
+            matnow = dfednow.pivot_table(index=[mat_yvar], columns=[mat_xvar],
+                                         values='True_Prevalence_elim_day', dropna=False)
             matnow = (matnow / 365).round(1)  # .astype('Int64')
 
             # - Create annotated heatmap
@@ -1168,17 +1189,17 @@ def update_prev_ts(sel_eir_itn, sel_drive_type,
     dfi = dfis[winame]
 
     # - Subset dataframe
-    dfinow = dfi[dfi[svar0].isin(svvals[svar0]) &
-                 dfi[svar1].isin(svvals[svar1]) &
-                 dfi[ov_xvar].isin(svvals[ov_xvar]) &
-                 dfi[ov_yvar].isin(svvals[ov_yvar])]
+    dfi = dfi[dfi[svar0].isin(svvals[svar0]) &
+              dfi[svar1].isin(svvals[svar1]) &
+              dfi[ov_xvar].isin(svvals[ov_xvar]) &
+              dfi[ov_yvar].isin(svvals[ov_yvar])]
     svdefsnow = {k: v for k, v in svdefs.items() if k not in [svar0, svar1, ov_xvar, ov_yvar]}
     for k, v in svdefsnow.items():
-        dfinow = dfinow[dfinow[k] == v]
-        dfinow.drop(columns=[k], inplace=True)
+        dfi = dfi[dfi[k] == v]
+        dfi.drop(columns=[k], inplace=True)
 
     # - Plot
-    fig = px.line(dfinow, x='Time', y='True Prevalence',
+    fig = px.line(dfi, x='Time', y='True Prevalence',
                   labels={
                       'True Prevalence': '',
                       'Time': 'Day',
@@ -1220,17 +1241,17 @@ def update_av_ts(sel_eir_itn, sel_drive_type,
     dfi = dfis[winame]
 
     # - Subset dataframe
-    dfinow = dfi[dfi[svar0].isin(svvals[svar0]) &
-                 dfi[svar1].isin(svvals[svar1]) &
-                 dfi[ov_xvar].isin(svvals[ov_xvar]) &
-                 dfi[ov_yvar].isin(svvals[ov_yvar])]
+    dfi = dfi[dfi[svar0].isin(svvals[svar0]) &
+              dfi[svar1].isin(svvals[svar1]) &
+              dfi[ov_xvar].isin(svvals[ov_xvar]) &
+              dfi[ov_yvar].isin(svvals[ov_yvar])]
     svdefsnow = {k: v for k, v in svdefs.items() if k not in [svar0, svar1, ov_xvar, ov_yvar]}
     for k, v in svdefsnow.items():
-        dfinow = dfinow[dfinow[k] == v]
-        dfinow.drop(columns=[k], inplace=True)
+        dfi = dfi[dfi[k] == v]
+        dfi.drop(columns=[k], inplace=True)
 
     # - Plot
-    fig = px.line(dfinow, x='Time', y='Adult Vectors',
+    fig = px.line(dfi, x='Time', y='Adult Vectors',
                   labels={
                       'Adult Vectors': '#',
                       'Time': 'Day',
@@ -1272,17 +1293,17 @@ def update_ivf_ts(sel_eir_itn, sel_drive_type,
     dfi = dfis[winame]
 
     # - Subset dataframe
-    dfinow = dfi[dfi[svar0].isin(svvals[svar0]) &
-                 dfi[svar1].isin(svvals[svar1]) &
-                 dfi[ov_xvar].isin(svvals[ov_xvar]) &
-                 dfi[ov_yvar].isin(svvals[ov_yvar])]
+    dfi = dfi[dfi[svar0].isin(svvals[svar0]) &
+              dfi[svar1].isin(svvals[svar1]) &
+              dfi[ov_xvar].isin(svvals[ov_xvar]) &
+              dfi[ov_yvar].isin(svvals[ov_yvar])]
     svdefsnow = {k: v for k, v in svdefs.items() if k not in [svar0, svar1, ov_xvar, ov_yvar]}
     for k, v in svdefsnow.items():
-        dfinow = dfinow[dfinow[k] == v]
-        dfinow.drop(columns=[k], inplace=True)
+        dfi = dfi[dfi[k] == v]
+        dfi.drop(columns=[k], inplace=True)
 
     # - Plot
-    fig = px.line(dfinow, x='Time', y='Infectious Vectors',
+    fig = px.line(dfi, x='Time', y='Infectious Vectors',
                   labels={
                       'Infectious Vectors': '',
                       'Time': 'Day',
@@ -1316,7 +1337,7 @@ def update_ivf_ts(sel_eir_itn, sel_drive_type,
      Input('sweep-var5-0', 'value'),
      Input('sweep-var5-1', 'value')])
 def update_ivn_ts(sel_eir_itn, sel_drive_type,
-                 ov_xvar, ov_yvar, svar0, svar1):
+                  ov_xvar, ov_yvar, svar0, svar1):
     # - Get selected data and sweep var vals
     svvals = sv_vals_by_drive_type[sel_drive_type]
     svdefs = sv_defs_by_drive_type[sel_drive_type]
@@ -1324,17 +1345,17 @@ def update_ivn_ts(sel_eir_itn, sel_drive_type,
     dfi = dfis[winame]
 
     # - Subset dataframe
-    dfinow = dfi[dfi[svar0].isin(svvals[svar0]) &
-                 dfi[svar1].isin(svvals[svar1]) &
-                 dfi[ov_xvar].isin(svvals[ov_xvar]) &
-                 dfi[ov_yvar].isin(svvals[ov_yvar])]
+    dfi = dfi[dfi[svar0].isin(svvals[svar0]) &
+              dfi[svar1].isin(svvals[svar1]) &
+              dfi[ov_xvar].isin(svvals[ov_xvar]) &
+              dfi[ov_yvar].isin(svvals[ov_yvar])]
     svdefsnow = {k: v for k, v in svdefs.items() if k not in [svar0, svar1, ov_xvar, ov_yvar]}
     for k, v in svdefsnow.items():
-        dfinow = dfinow[dfinow[k] == v]
-        dfinow.drop(columns=[k], inplace=True)
+        dfi = dfi[dfi[k] == v]
+        dfi.drop(columns=[k], inplace=True)
 
     # - Plot
-    fig = px.line(dfinow, x='Time', y='Infectious Vectors Num',
+    fig = px.line(dfi, x='Time', y='Infectious Vectors Num',
                   labels={
                       'Infectious Vectors Num': '#',
                       'Time': 'Day',
@@ -1377,17 +1398,17 @@ def update_ef_ts(sel_eir_itn, sel_drive_type,
     dfa = dfas[winame]
 
     # - Subset dataframe
-    dfanow = dfa[dfa[svar0].isin(svvals[svar0]) &
-                 dfa[svar1].isin(svvals[svar1]) &
-                 dfa[ov_xvar].isin(svvals[ov_xvar]) &
-                 dfa[ov_yvar].isin(svvals[ov_yvar])]
+    dfa = dfa[dfa[svar0].isin(svvals[svar0]) &
+              dfa[svar1].isin(svvals[svar1]) &
+              dfa[ov_xvar].isin(svvals[ov_xvar]) &
+              dfa[ov_yvar].isin(svvals[ov_yvar])]
     svdefsnow = {k: v for k, v in svdefs.items() if k not in [svar0, svar1, ov_xvar, ov_yvar]}
     for k, v in svdefsnow.items():
-        dfanow = dfanow[dfanow[k] == v]
-        dfanow.drop(columns=[k], inplace=True)
+        dfa = dfa[dfa[k] == v]
+        dfa.drop(columns=[k], inplace=True)
 
     # - Plot
-    fig = px.line(dfanow, x='Time', y=effallele,
+    fig = px.line(dfa, x='Time', y=effallele,
                   labels={
                       effallele: '',
                       'Time': 'Day',
@@ -1430,17 +1451,17 @@ def update_wt_ts(sel_eir_itn, sel_drive_type,
     dfa = dfas[winame]
 
     # - Subset dataframe
-    dfanow = dfa[dfa[svar0].isin(svvals[svar0]) &
-                 dfa[svar1].isin(svvals[svar1]) &
-                 dfa[ov_xvar].isin(svvals[ov_xvar]) &
-                 dfa[ov_yvar].isin(svvals[ov_yvar])]
+    dfa = dfa[dfa[svar0].isin(svvals[svar0]) &
+              dfa[svar1].isin(svvals[svar1]) &
+              dfa[ov_xvar].isin(svvals[ov_xvar]) &
+              dfa[ov_yvar].isin(svvals[ov_yvar])]
     svdefsnow = {k: v for k, v in svdefs.items() if k not in [svar0, svar1, ov_xvar, ov_yvar]}
     for k, v in svdefsnow.items():
-        dfanow = dfanow[dfanow[k] == v]
-        dfanow.drop(columns=[k], inplace=True)
+        dfa = dfa[dfa[k] == v]
+        dfa.drop(columns=[k], inplace=True)
 
     # - Plot
-    fig = px.line(dfanow, x='Time', y=wtallele,
+    fig = px.line(dfa, x='Time', y=wtallele,
                   labels={
                       wtallele: '',
                       'Time': 'Day',
@@ -1483,17 +1504,17 @@ def update_rs_ts(sel_eir_itn, sel_drive_type,
     dfa = dfas[winame]
 
     # - Subset dataframe
-    dfanow = dfa[dfa[svar0].isin(svvals[svar0]) &
-                 dfa[svar1].isin(svvals[svar1]) &
-                 dfa[ov_xvar].isin(svvals[ov_xvar]) &
-                 dfa[ov_yvar].isin(svvals[ov_yvar])]
+    dfa = dfa[dfa[svar0].isin(svvals[svar0]) &
+              dfa[svar1].isin(svvals[svar1]) &
+              dfa[ov_xvar].isin(svvals[ov_xvar]) &
+              dfa[ov_yvar].isin(svvals[ov_yvar])]
     svdefsnow = {k: v for k, v in svdefs.items() if k not in [svar0, svar1, ov_xvar, ov_yvar]}
     for k, v in svdefsnow.items():
-        dfanow = dfanow[dfanow[k] == v]
-        dfanow.drop(columns=[k], inplace=True)
+        dfa = dfa[dfa[k] == v]
+        dfa.drop(columns=[k], inplace=True)
 
     # - Plot
-    fig = px.line(dfanow, x='Time', y=rsallele,
+    fig = px.line(dfa, x='Time', y=rsallele,
                   labels={
                       rsallele: '',
                       'Time': 'Day',
