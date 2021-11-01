@@ -26,13 +26,13 @@ app = dash.Dash(__name__)
 ##
 # -------- Choose experiment and set up params
 svs_by_drive_type = {
-    'Classic': {'rc': 'rc (pheno. effect.)',
+    'Classic': {'rc': 'rc (transm.-blocking eff.)',
                 'd': 'd (drive efficiency)',
-                'rr0': 'rr0 (init. resistance)',
+                'rr0': 'rr0 (pre-ex. resistance)',
                 'sne': 'sne (fitness cost)'},
-    'Integral': {'rc': 'rc (pheno. effect.)',
+    'Integral': {'rc': 'rc (transm.-blocking eff.)',
                  'd1': 'd1 (drive efficiency)',
-                 'rr20': 'rr20 (init. resistance)',
+                 'rr20': 'rr20 (pre-ex. resistance)',
                  'se2': 'se2 (fitness cost)'}
 }
 
